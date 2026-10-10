@@ -15,7 +15,8 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Public developer profiles
+// Find developers + public developer profiles
+Route::get('/devs', [DeveloperController::class, 'index'])->name('devs.index');
 Route::get('/devs/{user}', [DeveloperController::class, 'show'])->name('devs.show');
 
 Route::middleware('auth')->group(function () {
