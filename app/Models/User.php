@@ -218,6 +218,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->morphMany(Favorite::class, 'favoritable');
     }
 
+    public function aiSearches(): HasMany
+    {
+        return $this->hasMany(AiSearch::class);
+    }
+
     public function reports(): MorphMany
     {
         return $this->morphMany(Report::class, 'reportable');
