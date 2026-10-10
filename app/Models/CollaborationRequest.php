@@ -31,9 +31,10 @@ class CollaborationRequest extends Model
         $query->where('status', RequestStatus::Pending);
     }
 
+    /** Includes deleted projects so the request history still shows their title. */
     public function project(): BelongsTo
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(Project::class)->withTrashed();
     }
 
     /** The developer concerned (applicant or invitee). */

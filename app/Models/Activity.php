@@ -25,6 +25,19 @@ class Activity extends Model
         ];
     }
 
+    /**
+     * Add an event to the activity feed ("Alpha a créé un projet").
+     */
+    public static function log(User $user, ActivityType $type, Model $subject): self
+    {
+        return static::create([
+            'user_id' => $user->id,
+            'type' => $type,
+            'subject_type' => $subject->getMorphClass(),
+            'subject_id' => $subject->getKey(),
+        ]);
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

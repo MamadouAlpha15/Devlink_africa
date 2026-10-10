@@ -57,7 +57,9 @@ Lien vers un profil : `route('devs.show', $user)` → `/devs/alpha-keita`.
 | Suivre | `POST /devs/{username}/follow` | `devs.follow` |
 | Ne plus suivre | `DELETE /devs/{username}/follow` | `devs.unfollow` |
 
-À venir (prochaines branches) : Contacter, Proposer une collaboration, Signaler.
+Proposer une collaboration : voir `projets.md` (variable `$invitableProjects`).
+
+À venir (prochaines branches) : Contacter, Signaler.
 
 ---
 

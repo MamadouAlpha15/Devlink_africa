@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ProjectCategory;
+use App\Enums\ProjectMemberRole;
 use App\Enums\ProjectStatus;
 use Database\Factories\ProjectFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 #[Fillable([
@@ -110,5 +112,39 @@ class Project extends Model
     public function isOwnedBy(User $user): bool
     {
         return $this->owner_id === $user->id;
+    }
+
+    public function membershipOf(User $user): ?ProjectMember
+    {
+        return $this->memberships()->where('user_id', $user->id)->first();
+    }
+
+    public function hasMember(User $user): bool
+    {
+        return $this->memberships()->where('user_id', $user->id)->exists();
+    }
+
+    /**
+     * Owner and co-owners handle requests, roles and members.
+     */
+    public function isManagedBy(User $user): bool
+    {
+        return $this->memberships()
+            ->where('user_id', $user->id)
+            ->whereIn('role', [ProjectMemberRole::Owner, ProjectMemberRole::CoOwner])
+            ->exists();
+    }
+
+    /**
+     * New members can join while the project is an idea, recruiting or in progress.
+     */
+    public function acceptsCollaborators(): bool
+    {
+        return in_array($this->status, [ProjectStatus::Idea, ProjectStatus::Recruiting, ProjectStatus::InProgress], true);
+    }
+
+    public function coverUrl(): ?string
+    {
+        return $this->cover_path ? Storage::disk('public')->url($this->cover_path) : null;
     }
 }

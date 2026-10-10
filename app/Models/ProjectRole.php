@@ -36,4 +36,19 @@ class ProjectRole extends Model
     {
         return $this->hasMany(ProjectMember::class);
     }
+
+    /**
+     * Number of free places ("Laravel Developer ×1" with nobody yet → 1).
+     */
+    public function openSlots(): int
+    {
+        $filled = $this->members_count ?? $this->members()->count();
+
+        return max(0, $this->slots - $filled);
+    }
+
+    public function isFull(): bool
+    {
+        return $this->openSlots() === 0;
+    }
 }
