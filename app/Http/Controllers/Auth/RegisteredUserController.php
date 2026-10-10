@@ -46,6 +46,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        // Cahier, section 1: the profile is completed right after registration.
+        return redirect(route('developer-profile.edit', absolute: false));
     }
 }

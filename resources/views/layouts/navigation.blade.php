@@ -19,6 +19,13 @@
             </div>
 
             <!-- Settings Dropdown -->
+            @guest
+                <div class="hidden sm:flex sm:items-center sm:ms-6 space-x-4 text-sm">
+                    <a href="{{ route('login') }}" class="text-gray-600 hover:text-gray-900">Connexion</a>
+                    <a href="{{ route('register') }}" class="text-gray-600 hover:text-gray-900">Inscription</a>
+                </div>
+            @endguest
+            @auth
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
@@ -34,8 +41,16 @@
                     </x-slot>
 
                     <x-slot name="content">
+                        <x-dropdown-link :href="route('devs.show', Auth::user())">
+                            Mon profil public
+                        </x-dropdown-link>
+
+                        <x-dropdown-link :href="route('developer-profile.edit')">
+                            Modifier mon profil
+                        </x-dropdown-link>
+
                         <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
+                            Compte
                         </x-dropdown-link>
 
                         <!-- Authentication -->
@@ -51,6 +66,7 @@
                     </x-slot>
                 </x-dropdown>
             </div>
+            @endauth
 
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
@@ -73,6 +89,13 @@
         </div>
 
         <!-- Responsive Settings Options -->
+        @guest
+            <div class="pt-4 pb-1 border-t border-gray-200 space-y-1">
+                <x-responsive-nav-link :href="route('login')">Connexion</x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('register')">Inscription</x-responsive-nav-link>
+            </div>
+        @endguest
+        @auth
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">
                 <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
@@ -80,8 +103,16 @@
             </div>
 
             <div class="mt-3 space-y-1">
+                <x-responsive-nav-link :href="route('devs.show', Auth::user())">
+                    Mon profil public
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('developer-profile.edit')">
+                    Modifier mon profil
+                </x-responsive-nav-link>
+
                 <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
+                    Compte
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->
@@ -96,5 +127,6 @@
                 </form>
             </div>
         </div>
+        @endauth
     </div>
 </nav>

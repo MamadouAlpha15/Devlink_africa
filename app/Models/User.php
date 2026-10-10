@@ -10,6 +10,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 #[Fillable([
@@ -85,6 +87,26 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getRouteKeyName(): string
     {
         return 'username';
+    }
+
+    /**
+     * Public URL of the profile photo, or null (the UI then shows the initials).
+     */
+    protected function avatarUrl(): Attribute
+    {
+        return Attribute::get(fn () => $this->avatar_path
+            ? Storage::disk('public')->url($this->avatar_path)
+            : null);
+    }
+
+    /**
+     * "Alpha Keita" → "AK", used when there is no photo.
+     */
+    protected function initials(): Attribute
+    {
+        return Attribute::get(fn () => Str::upper(
+            collect(explode(' ', $this->name))->filter()->take(2)->map(fn (string $part) => Str::substr($part, 0, 1))->join('')
+        ));
     }
 
     public function isSuspended(): bool
