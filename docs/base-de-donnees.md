@@ -1,7 +1,11 @@
 # DevLink Africa — Schéma de la base de données
 
-> Version 1 — à valider ensemble (backend + frontend) avant d'écrire les migrations.
+> Version 1.1 — validée par l'équipe, migrations écrites (`database/migrations/2026_10_10_*`).
 > MySQL 8 · InnoDB · utf8mb4. Toutes les tables ont `id`, `created_at`, `updated_at` sauf mention contraire.
+>
+> **Colonnes « enum »** : stockées en `string` en base et validées par des enums PHP dans `app/Enums/`
+> (chaque enum a une méthode `label()` qui donne le libellé français à afficher, ex. `$project->status->label()` → « Recrutement »).
+> Ajouter une valeur = modifier l'enum, sans migration.
 
 ## Vue d'ensemble
 
@@ -48,7 +52,8 @@ erDiagram
 | is_public | bool, défaut true | Confidentialité |
 | show_email | bool, défaut false | Confidentialité |
 | show_availability | bool, défaut true | Confidentialité |
-| notify_by_email | bool, défaut true | Préférences de notification |
+| notify_by_email | bool, défaut true | Préférences de notification : email |
+| notify_on_platform | bool, défaut true | Préférences de notification : plateforme |
 | is_admin | bool, défaut false | Accès administration |
 | suspended_at | timestamp, nullable | Suspension par un admin |
 
@@ -114,12 +119,12 @@ erDiagram
 | title | string | |
 | slug | string, unique | |
 | description | text | |
-| type | enum | `api`, `template`, `framework`, `package`, `ui_kit`, `documentation`, `script`, `library`, `open_source` |
+| type | enum | `api`, `template`, `framework`, `package`, `ui_kit`, `documentation`, `script`, `library`, `open_source` — c'est aussi la « catégorie » du formulaire de publication |
 | image_path | string, nullable | |
 | file_path | string, nullable | Fichier téléchargeable |
 | github_url, demo_url | string, nullable | |
 | country_id | FK → countries, nullable | |
-| status | enum | `pending`, `approved`, `rejected` (validation admin) |
+| status | enum | `pending`, `approved`, `rejected` — défaut `approved` (publiée directement, l'admin peut retirer) |
 | downloads_count | unsigned int, défaut 0 | |
 | likes_count | unsigned int, défaut 0 | Compteur en cache |
 | rating_avg | decimal(2,1), nullable | Moyenne en cache |
@@ -307,9 +312,26 @@ erDiagram
 
 ---
 
-## Points à décider ensemble
+## Décisions prises
 
-1. **Prénom / Nom** : on garde `name` (utilisé par Breeze) **et** on ajoute `first_name` / `last_name` ? Ou on remplace `name` par les deux ?
-2. **Opportunités** (dans « Favoris ») : le cahier ne les décrit nulle part — on les laisse de côté pour le MVP ?
-3. **Validation des ressources** : publiées directement (`approved`) ou en attente de validation admin (`pending`) ? Pour la démo, je propose **publiées directement**, l'admin peut retirer après coup.
-4. **Catégories de projets** : la liste `fintech`, `healthtech`, `edtech`… convient ?
+1. **Prénom / Nom** : on garde `name` (Breeze, nom affiché) **et** on ajoute `first_name` / `last_name`.
+2. **Opportunités** (dans « Favoris ») : laissées de côté pour le MVP.
+3. **Ressources** : publiées directement (`approved`), l'admin peut les retirer.
+4. **Catégories de projets** : `fintech`, `healthtech`, `edtech`, `agritech`, `ecommerce`, `logistics`, `social`, `govtech`, `other`.
+5. **Type de ressource = catégorie** : un seul champ `type`.
+6. **Front-end** : Tailwind CSS (installé par Breeze).
+
+---
+
+## Données de démonstration
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+- **Référence** : 54 pays africains (avec drapeau emoji), 46 compétences, 6 badges.
+- **Démo** : ~50 membres répartis dans 16 pays, 11 projets (AfricaDelivery, FinTech Africa, HealthTech Guinea, AgriConnect, EduLink Sahel…), 12 ressources avec notes / likes / commentaires, demandes de collaboration, messages, badges et DevScore étalés sur 6 mois.
+- **Comptes** (mot de passe : `password`) :
+  - `admin@devlink.africa` — administrateur
+  - `alpha.keita@devlink.africa` — propriétaire d'AfricaDelivery
+  - `ibrahim.sow@devlink.africa`, `aminata.camara@devlink.africa`, `mamadou.diallo@devlink.africa`…
