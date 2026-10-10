@@ -2,14 +2,47 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Availability;
+use App\Enums\ExperienceLevel;
+use App\Enums\ProfileType;
 use App\Enums\ProjectMemberRole;
+use App\Models\Country;
+use App\Models\Skill;
 use App\Models\User;
+use App\Search\DeveloperSearch;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class DeveloperController extends Controller
 {
+    /**
+     * "Trouver des développeurs": /devs?q=laravel&country=guinee&availability=available
+     */
+    public function index(Request $request): View
+    {
+        $search = DeveloperSearch::fromRequest($request);
+
+        // Developers per country (cahier, section 5), also used to label the country filter.
+        $countries = Country::query()
+            ->withCount(['users as developers_count' => fn ($query) => $query->listed()])
+            ->orderBy('name')
+            ->get();
+
+        return view('devs.index', [
+            'developers' => $search->query()->paginate(12)->withQueryString(),
+            'filters' => $search->input(),
+            'hasFilters' => $search->hasFilters(),
+            'countries' => $countries,
+            'topCountries' => $countries->where('developers_count', '>', 0)->sortByDesc('developers_count')->take(10)->values(),
+            'skillsByCategory' => Skill::orderBy('name')->get()->groupBy(fn (Skill $skill) => $skill->category->label()),
+            'experienceLevels' => ExperienceLevel::cases(),
+            'availabilities' => Availability::cases(),
+            'profileTypes' => ProfileType::cases(),
+            'sorts' => DeveloperSearch::SORTS,
+        ]);
+    }
+
     /**
      * Public developer profile: /devs/{username}.
      */
