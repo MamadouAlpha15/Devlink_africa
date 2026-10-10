@@ -25,6 +25,9 @@
                         <x-nav-link :href="route('collaborations.index')" :active="request()->routeIs('collaborations.*')">
                             Mes collaborations
                         </x-nav-link>
+                        <x-nav-link :href="route('ai.create')" :active="request()->routeIs('ai.*')">
+                            DevLink AI
+                        </x-nav-link>
                     @endauth
                 </div>
             </div>
@@ -106,6 +109,9 @@
             @auth
                 <x-responsive-nav-link :href="route('collaborations.index')" :active="request()->routeIs('collaborations.*')">
                     Mes collaborations
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('ai.create')" :active="request()->routeIs('ai.*')">
+                    DevLink AI
                 </x-responsive-nav-link>
             @endauth
         </div>

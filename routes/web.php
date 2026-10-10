@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AiSearchController;
 use App\Http\Controllers\CollaborationRequestController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\DeveloperProfileController;
@@ -64,6 +65,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/collaborations/{collaborationRequest}/accept', [CollaborationRequestController::class, 'accept'])->name('collaborations.accept');
     Route::post('/collaborations/{collaborationRequest}/reject', [CollaborationRequestController::class, 'reject'])->name('collaborations.reject');
     Route::delete('/collaborations/{collaborationRequest}', [CollaborationRequestController::class, 'destroy'])->name('collaborations.destroy');
+
+    // DevLink AI (members only, limited to 10 searches per minute)
+    Route::get('/ai', [AiSearchController::class, 'create'])->name('ai.create');
+    Route::post('/ai', [AiSearchController::class, 'store'])->middleware('throttle:10,1')->name('ai.store');
+    Route::get('/ai/{aiSearch}', [AiSearchController::class, 'show'])->name('ai.show');
 
     // Team members
     Route::patch('/projects/{project}/members/{member}', [ProjectMemberController::class, 'update'])->name('projects.members.update');
