@@ -18,6 +18,14 @@
                     <x-nav-link :href="route('devs.index')" :active="request()->routeIs('devs.*')">
                         Développeurs
                     </x-nav-link>
+                    <x-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')">
+                        Projets
+                    </x-nav-link>
+                    @auth
+                        <x-nav-link :href="route('collaborations.index')" :active="request()->routeIs('collaborations.*')">
+                            Mes collaborations
+                        </x-nav-link>
+                    @endauth
                 </div>
             </div>
 
@@ -92,6 +100,14 @@
             <x-responsive-nav-link :href="route('devs.index')" :active="request()->routeIs('devs.*')">
                 Développeurs
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')">
+                Projets
+            </x-responsive-nav-link>
+            @auth
+                <x-responsive-nav-link :href="route('collaborations.index')" :active="request()->routeIs('collaborations.*')">
+                    Mes collaborations
+                </x-responsive-nav-link>
+            @endauth
         </div>
 
         <!-- Responsive Settings Options -->

@@ -57,7 +57,7 @@
                         </form>
                     @endif
                 @endif
-                {{-- À venir : Contacter (messagerie), Proposer une collaboration, Signaler --}}
+                {{-- À venir : Contacter (messagerie), Signaler --}}
 
                 @if ($user->github_url) <a href="{{ $user->github_url }}" target="_blank" rel="noopener" class="underline">GitHub</a> @endif
                 @if ($user->linkedin_url) <a href="{{ $user->linkedin_url }}" target="_blank" rel="noopener" class="underline">LinkedIn</a> @endif
@@ -65,6 +65,25 @@
                 @if ($user->website_url) <a href="{{ $user->website_url }}" target="_blank" rel="noopener" class="underline">Site</a> @endif
                 @if ($user->show_email) <a href="mailto:{{ $user->email }}" class="underline">{{ $user->email }}</a> @endif
             </div>
+
+            {{-- Proposer une collaboration --}}
+            @if ($invitableProjects->isNotEmpty())
+                <form method="POST" x-data="{ project: '{{ $invitableProjects->first()->slug }}' }"
+                      :action="'{{ url('/projects') }}/' + project + '/invitations'"
+                      class="p-4 bg-white shadow rounded space-y-2">
+                    @csrf
+                    <h3 class="font-semibold">Proposer une collaboration</h3>
+                    <input type="hidden" name="user_id" value="{{ $user->id }}">
+                    <select x-model="project" class="border-gray-300 rounded">
+                        @foreach ($invitableProjects as $project)
+                            <option value="{{ $project->slug }}">{{ $project->title }}</option>
+                        @endforeach
+                    </select>
+                    <textarea name="message" rows="2" maxlength="1000" class="block w-full border-gray-300 rounded" placeholder="Bonjour, ton profil correspond à notre projet…"></textarea>
+                    <x-input-error :messages="$errors->get('collaboration')" />
+                    <x-primary-button>Envoyer l'invitation</x-primary-button>
+                </form>
+            @endif
 
             {{-- DevScore et statistiques --}}
             <div class="p-6 bg-white shadow rounded">

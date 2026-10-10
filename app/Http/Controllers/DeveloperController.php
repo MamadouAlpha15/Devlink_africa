@@ -6,11 +6,13 @@ use App\Enums\Availability;
 use App\Enums\ExperienceLevel;
 use App\Enums\ProfileType;
 use App\Enums\ProjectMemberRole;
+use App\Enums\ProjectStatus;
 use App\Models\Country;
 use App\Models\Skill;
 use App\Models\User;
 use App\Search\DeveloperSearch;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
@@ -70,6 +72,21 @@ class DeveloperController extends Controller
             'isOwner' => $viewer?->is($user) ?? false,
             'isFollowing' => $viewer ? $viewer->following()->whereKey($user->id)->exists() : false,
             'canFollow' => $viewer ? Gate::forUser($viewer)->allows('follow', $user) : false,
+            'invitableProjects' => $viewer && ! $viewer->is($user) ? $this->invitableProjects($viewer, $user) : collect(),
         ]);
+    }
+
+    /**
+     * "Proposer une collaboration": projects I manage that are open and that the developer is not part of yet.
+     */
+    private function invitableProjects(User $viewer, User $developer): Collection
+    {
+        return $viewer->projects()
+            ->wherePivotIn('role', [ProjectMemberRole::Owner->value, ProjectMemberRole::CoOwner->value])
+            ->whereIn('status', [ProjectStatus::Idea, ProjectStatus::Recruiting, ProjectStatus::InProgress])
+            ->whereDoesntHave('memberships', fn ($query) => $query->where('user_id', $developer->id))
+            ->with(['roles' => fn ($roles) => $roles->withCount('members')])
+            ->orderBy('title')
+            ->get();
     }
 }
