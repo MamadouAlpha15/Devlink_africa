@@ -50,6 +50,15 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // Suspended by an admin (cahier, section 21): the right password is not enough.
+        if (Auth::user()->isSuspended()) {
+            Auth::guard('web')->logout();
+
+            throw ValidationException::withMessages([
+                'email' => 'Votre compte a été suspendu par un administrateur.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

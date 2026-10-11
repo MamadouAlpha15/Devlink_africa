@@ -116,6 +116,12 @@
                             Mes favoris
                         </x-dropdown-link>
 
+                        @if (Auth::user()->is_admin)
+                            <x-dropdown-link :href="route('admin.dashboard')">
+                                Administration
+                            </x-dropdown-link>
+                        @endif
+
                         <x-dropdown-link :href="route('profile.edit')">
                             Compte
                         </x-dropdown-link>
@@ -205,6 +211,12 @@
                 <x-responsive-nav-link :href="route('favorites.index')">
                     Mes favoris
                 </x-responsive-nav-link>
+
+                @if (Auth::user()->is_admin)
+                    <x-responsive-nav-link :href="route('admin.dashboard')">
+                        Administration
+                    </x-responsive-nav-link>
+                @endif
 
                 <x-responsive-nav-link :href="route('profile.edit')">
                     Compte
