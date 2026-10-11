@@ -21,6 +21,9 @@
                     <x-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')">
                         Projets
                     </x-nav-link>
+                    <x-nav-link :href="route('resources.index')" :active="request()->routeIs('resources.*')">
+                        Ressources
+                    </x-nav-link>
                     <x-nav-link :href="route('ranking.index')" :active="request()->routeIs('ranking.*')">
                         Classement
                     </x-nav-link>
@@ -112,6 +115,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')">
                 Projets
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('resources.index')" :active="request()->routeIs('resources.*')">
+                Ressources
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('ranking.index')" :active="request()->routeIs('ranking.*')">
                 Classement
