@@ -82,12 +82,12 @@ class FavoriteTest extends TestCase
         $me = User::factory()->create();
         $project = Project::factory()->create();
 
-        $this->actingAs($me)->get("/projects/{$project->slug}")->assertSee('Ajouter aux favoris');
+        $this->actingAs($me)->get("/projects/{$project->slug}")->assertSee('Ajouter à mes favoris');
         $this->actingAs($me)->post("/favorites/project/{$project->id}");
-        $this->actingAs($me)->get("/projects/{$project->slug}")->assertSee('Dans mes favoris');
+        $this->actingAs($me)->get("/projects/{$project->slug}")->assertSee('Retirer de mes favoris');
 
         // No button on my own profile.
-        $this->actingAs($me)->get("/devs/{$me->username}")->assertDontSee('Ajouter aux favoris');
+        $this->actingAs($me)->get("/devs/{$me->username}")->assertDontSee('Ajouter à mes favoris');
     }
 
     public function test_favorites_are_reserved_to_members(): void

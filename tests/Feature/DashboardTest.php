@@ -39,8 +39,8 @@ class DashboardTest extends TestCase
         $response = $this->actingAs($alpha)->get('/dashboard')->assertOk()
             ->assertSee('Bonjour Alpha')
             ->assertSee('Développeurs recommandés')
-            ->assertSee('Projets intéressants')
-            ->assertSee('Fil d\'activité', false);
+            ->assertSee('Projets qui recrutent')
+            ->assertSee('Fil d\'activité');
 
         $this->assertSame(['projects' => 1, 'resources' => 1, 'collaborations' => 0, 'followers' => 0], $response->viewData('stats'));
     }
@@ -126,7 +126,7 @@ class DashboardTest extends TestCase
 
         $this->actingAs($owner)->get('/dashboard')
             ->assertViewHas('pending', ['invitations' => 0, 'applications' => 1])
-            ->assertSee('1 demande(s) sur vos projets');
+            ->assertSee('Une demande attend votre réponse');
     }
 
     public function test_guests_are_sent_to_login(): void
