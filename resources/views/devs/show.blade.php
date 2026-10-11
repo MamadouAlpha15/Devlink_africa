@@ -1,164 +1,410 @@
 {{--
-    Profil public d'un développeur — version fonctionnelle minimale (backend).
-    Le front-end la restylera : voir docs/front-end/profils.md pour les variables disponibles.
---}}
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center gap-4">
-            @if ($user->avatar_url)
-                <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="h-20 w-20 rounded-full object-cover">
-            @else
-                <div class="h-20 w-20 rounded-full bg-gray-200 flex items-center justify-center text-2xl font-bold">{{ $user->initials }}</div>
-            @endif
+    Profil public d'un développeur.
 
-            <div>
-                <h2 class="font-semibold text-xl text-gray-800">{{ $user->name }}</h2>
-                <p class="text-gray-600">
-                    {{ $user->profile_type?->label() }}
-                    @if ($user->experience_level) · {{ $user->experience_level->label() }} @endif
-                </p>
-                <p class="text-gray-600">
-                    @if ($user->country) {{ $user->country->flag }} {{ $user->country->name }} @endif
-                    @if ($user->city) · {{ $user->city }} @endif
-                </p>
-                @if ($user->show_availability && $user->availability)
-                    <p class="text-sm">{{ $user->availability->label() }}</p>
-                @endif
+    Variables : $user, $projects, $resources, $ratingAvg, $isOwner,
+    $canFollow, $isFollowing, $invitableProjects.
+    Voir docs/front-end/profils.md.
+
+    Rappel : `email` ne s'affiche que si `show_email`, et la disponibilité
+    que si `show_availability` (géré par <x-availability>).
+--}}
+@php
+    // Liens externes du profil, dans l'ordre d'affichage.
+    //
+    // SÉCURITÉ — ces quatre URL sont saisies librement par l'utilisateur et
+    // finissent dans un attribut `href`. Une valeur comme `javascript:…` ou
+    // `data:text/html,…` s'exécuterait au clic, dans le navigateur d'un
+    // visiteur, sur ce domaine. La validation du backend porte sur la forme
+    // de l'URL, pas sur son schéma : on n'affiche donc que http et https,
+    // et on ignore silencieusement le reste.
+    $allowedSchemes = ['http', 'https'];
+
+    $externalLinks = collect([
+        ['url' => $user->github_url, 'label' => 'GitHub', 'icon' => 'github'],
+        ['url' => $user->linkedin_url, 'label' => 'LinkedIn', 'icon' => 'linkedin'],
+        ['url' => $user->portfolio_url, 'label' => 'Portfolio', 'icon' => 'briefcase'],
+        ['url' => $user->website_url, 'label' => 'Site personnel', 'icon' => 'link'],
+    ])->filter(function ($link) use ($allowedSchemes) {
+        if (blank($link['url'])) {
+            return false;
+        }
+
+        $scheme = parse_url($link['url'], PHP_URL_SCHEME);
+
+        return is_string($scheme) && in_array(strtolower($scheme), $allowedSchemes, true);
+    });
+
+    // Compteurs affichés sous l'identité.
+    $stats = [
+        ['value' => $user->projects_count, 'label' => 'Projets', 'icon' => 'folder'],
+        ['value' => $user->resources_count, 'label' => 'Ressources', 'icon' => 'book'],
+        ['value' => $user->collaborations_count, 'label' => 'Collaborations', 'icon' => 'handshake'],
+        ['value' => $user->followers_count, 'label' => 'Abonnés', 'icon' => 'users'],
+    ];
+@endphp
+
+<x-app-layout :title="$user->name">
+    <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+
+        <x-flash />
+
+        @if ($isOwner && ! $user->is_public)
+            <div class="alert-warning mb-6">
+                <x-icon name="eye-off" class="mt-px h-4 w-4 shrink-0" />
+                <div class="flex-1">
+                    <p class="font-semibold">Votre profil est privé</p>
+                    <p class="mt-0.5">Vous seul pouvez le voir. Rendez-le public depuis
+                        <a href="{{ route('developer-profile.edit') }}" class="underline underline-offset-2">la modification du profil</a>
+                        pour apparaître dans les recherches.</p>
+                </div>
+            </div>
+        @endif
+
+        {{-- ==========  En-tête du profil  ========== --}}
+        <div class="panel">
+            <div class="flex flex-col gap-6 sm:flex-row sm:items-start">
+                <x-avatar :user="$user" size="2xl" />
+
+                <div class="min-w-0 flex-1">
+                    <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                        <div class="min-w-0">
+                            <h1 class="page-title">{{ $user->name }}</h1>
+
+                            <p class="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-ink-600 dark:text-ink-400">
+                                <span class="font-medium text-ink-800 dark:text-ink-200">{{ $user->profile_type?->label() }}</span>
+                                @if ($user->experience_level)
+                                    <span class="text-ink-300 dark:text-ink-700">·</span>
+                                    <span>{{ $user->experience_level->label() }}</span>
+                                @endif
+                                <span class="text-ink-300 dark:text-ink-700">·</span>
+                                <span class="font-mono text-xs text-ink-500">{{ '@'.$user->username }}</span>
+                            </p>
+
+                            <div class="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-2">
+                                <x-country-label :country="$user->country" :city="$user->city" />
+                                <x-availability :user="$user" />
+                            </div>
+                        </div>
+
+                        {{-- DevScore mis en avant --}}
+                        <div class="flex shrink-0 items-center gap-3 rounded-xl border border-brand-200 bg-brand-50 px-4 py-3 dark:border-brand-800 dark:bg-brand-950">
+                            <x-icon name="zap" class="h-5 w-5 text-brand-600 dark:text-brand-400" />
+                            <div>
+                                <p class="tabular text-xl font-bold leading-none text-brand-700 dark:text-brand-300">
+                                    {{ number_format($user->devscore, 0, ',', ' ') }}
+                                </p>
+                                <p class="mt-1 text-xs font-semibold uppercase tracking-wide text-brand-600 dark:text-brand-400">
+                                    points DevScore
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Actions --}}
+                    <div class="mt-5 flex flex-wrap items-center gap-2">
+                        @if ($isOwner)
+                            <a href="{{ route('developer-profile.edit') }}" class="btn-primary btn-sm">
+                                <x-icon name="pencil" class="h-4 w-4" />
+                                Modifier mon profil
+                            </a>
+                        @elseif ($canFollow)
+                            @if ($isFollowing)
+                                <form method="POST" action="{{ route('devs.unfollow', $user) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn-secondary btn-sm">
+                                        <x-icon name="user-check" class="h-4 w-4" />
+                                        Ne plus suivre
+                                    </button>
+                                </form>
+                            @else
+                                <form method="POST" action="{{ route('devs.follow', $user) }}">
+                                    @csrf
+                                    <button type="submit" class="btn-primary btn-sm">
+                                        <x-icon name="user-plus" class="h-4 w-4" />
+                                        Suivre
+                                    </button>
+                                </form>
+                            @endif
+                        @endif
+
+                        {{-- Enregistrer ce développeur. Le partial ne rend rien
+                             pour un visiteur ni sur son propre profil. --}}
+                        @include('partials.favorite-button', ['type' => 'developer', 'model' => $user])
+                        @include('partials.report-button', ['type' => 'developer', 'model' => $user, 'authorId' => $user->id])
+
+                        @if ($user->show_email)
+                            <a href="mailto:{{ $user->email }}" class="btn-secondary btn-sm">
+                                <x-icon name="mail" class="h-4 w-4" />
+                                Contacter
+                            </a>
+                        @endif
+
+                        {{-- Partage du lien du profil --}}
+                        <button
+                            type="button"
+                            x-data="copyToClipboard(@js(route('devs.show', $user)))"
+                            @click="copy()"
+                            class="btn-ghost btn-sm"
+                        >
+                            <x-icon name="copy" class="h-4 w-4" x-show="! hasCopied" />
+                            <x-icon name="check" class="h-4 w-4 text-emerald-600" x-show="hasCopied" x-cloak />
+                            <span x-text="hasCopied ? 'Lien copié' : 'Partager'">Partager</span>
+                        </button>
+
+                        @foreach ($externalLinks as $link)
+                            <a href="{{ $link['url'] }}" target="_blank" rel="noopener noreferrer"
+                               class="btn-ghost btn-sm" title="{{ $link['label'] }}">
+                                <x-icon :name="$link['icon']" class="h-4 w-4" />
+                                <span class="hidden sm:inline">{{ $link['label'] }}</span>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
+            {{-- Compteurs --}}
+            <div class="divider mt-6 grid grid-cols-2 gap-3 pt-6 sm:grid-cols-4">
+                @foreach ($stats as $stat)
+                    <x-stat :value="$stat['value']" :label="$stat['label']" :icon="$stat['icon']" />
+                @endforeach
             </div>
         </div>
-    </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-5xl mx-auto px-4 space-y-6">
+        {{-- ==========  Contenu  ========== --}}
+        <div class="mt-6 grid gap-6 lg:grid-cols-[1fr_20rem]">
 
-            @if (session('status'))
-                <div class="p-4 bg-green-50 text-green-800 rounded">{{ session('status') }}</div>
-            @endif
+            {{-- Colonne principale --}}
+            <div class="min-w-0 space-y-6">
 
-            @if ($isOwner && ! $user->is_public)
-                <div class="p-4 bg-yellow-50 text-yellow-800 rounded">Votre profil est privé : vous seul pouvez le voir.</div>
-            @endif
-
-            {{-- Actions --}}
-            <div class="flex flex-wrap gap-3">
-                @if ($isOwner)
-                    <a href="{{ route('developer-profile.edit') }}" class="underline">Modifier mon profil</a>
-                @elseif ($canFollow)
-                    @if ($isFollowing)
-                        <form method="POST" action="{{ route('devs.unfollow', $user) }}">
-                            @csrf
-                            @method('DELETE')
-                            <x-secondary-button type="submit">Ne plus suivre</x-secondary-button>
-                        </form>
-                    @else
-                        <form method="POST" action="{{ route('devs.follow', $user) }}">
-                            @csrf
-                            <x-primary-button>Suivre</x-primary-button>
-                        </form>
-                    @endif
+                @if ($user->bio)
+                    <div class="panel">
+                        <x-section-heading title="À propos" />
+                        <p class="mt-4 whitespace-pre-line text-sm leading-relaxed text-ink-700 dark:text-ink-300">{{ $user->bio }}</p>
+                    </div>
                 @endif
-                @include('partials.favorite-button', ['type' => 'developer', 'model' => $user])
-                @include('partials.report-button', ['type' => 'developer', 'model' => $user, 'authorId' => $user->id])
-                {{-- À venir : Contacter (messagerie) --}}
 
-                @if ($user->github_url) <a href="{{ $user->github_url }}" target="_blank" rel="noopener" class="underline">GitHub</a> @endif
-                @if ($user->linkedin_url) <a href="{{ $user->linkedin_url }}" target="_blank" rel="noopener" class="underline">LinkedIn</a> @endif
-                @if ($user->portfolio_url) <a href="{{ $user->portfolio_url }}" target="_blank" rel="noopener" class="underline">Portfolio</a> @endif
-                @if ($user->website_url) <a href="{{ $user->website_url }}" target="_blank" rel="noopener" class="underline">Site</a> @endif
-                @if ($user->show_email) <a href="mailto:{{ $user->email }}" class="underline">{{ $user->email }}</a> @endif
-            </div>
+                {{-- Compétences, groupées par niveau pour être lisibles d'un coup d'œil --}}
+                <div class="panel">
+                    <x-section-heading title="Compétences" :count="$user->skills->count()" />
 
-            {{-- Proposer une collaboration --}}
-            @if ($invitableProjects->isNotEmpty())
-                <form method="POST" x-data="{ project: '{{ $invitableProjects->first()->slug }}' }"
-                      :action="'{{ url('/projects') }}/' + project + '/invitations'"
-                      class="p-4 bg-white shadow rounded space-y-2">
-                    @csrf
-                    <h3 class="font-semibold">Proposer une collaboration</h3>
-                    <input type="hidden" name="user_id" value="{{ $user->id }}">
-                    <select x-model="project" class="border-gray-300 rounded">
-                        @foreach ($invitableProjects as $project)
-                            <option value="{{ $project->slug }}">{{ $project->title }}</option>
-                        @endforeach
-                    </select>
-                    <textarea name="message" rows="2" maxlength="1000" class="block w-full border-gray-300 rounded" placeholder="Bonjour, ton profil correspond à notre projet…"></textarea>
-                    <x-input-error :messages="$errors->get('collaboration')" />
-                    <x-primary-button>Envoyer l'invitation</x-primary-button>
-                </form>
-            @endif
+                    @if ($user->skills->isNotEmpty())
+                        @php($skillsByLevel = $user->skills->groupBy(fn ($skill) => $skill->pivot->level->value))
 
-            {{-- DevScore et statistiques --}}
-            <div class="p-6 bg-white shadow rounded">
-                <p class="text-2xl font-bold">{{ $user->devscore }} points DevScore</p>
-                <p class="text-gray-600">
-                    {{ $user->projects_count }} projets ·
-                    {{ $user->resources_count }} ressources ·
-                    {{ $user->collaborations_count }} collaborations ·
-                    @if ($ratingAvg) note {{ number_format($ratingAvg, 1, ',', ' ') }} · @endif
-                    {{ $user->followers_count }} abonnés · {{ $user->following_count }} abonnements
-                </p>
-            </div>
-
-            @if ($user->bio)
-                <div class="p-6 bg-white shadow rounded">
-                    <h3 class="font-semibold mb-2">Bio</h3>
-                    <p class="whitespace-pre-line">{{ $user->bio }}</p>
-                </div>
-            @endif
-
-            <div class="p-6 bg-white shadow rounded">
-                <h3 class="font-semibold mb-2">Compétences</h3>
-                <ul class="flex flex-wrap gap-2">
-                    @forelse ($user->skills as $skill)
-                        <li class="px-3 py-1 bg-gray-100 rounded-full text-sm">{{ $skill->name }} — {{ $skill->pivot->level->label() }}</li>
-                    @empty
-                        <li class="text-gray-600 text-sm">Aucune compétence renseignée.</li>
-                    @endforelse
-                </ul>
-            </div>
-
-            <div class="p-6 bg-white shadow rounded">
-                <h3 class="font-semibold mb-2">Badges</h3>
-                <ul class="flex flex-wrap gap-2">
-                    @forelse ($user->badges as $badge)
-                        <li class="px-3 py-1 bg-yellow-50 rounded-full text-sm" title="{{ $badge->description }}">{{ $badge->icon }} {{ $badge->name }}</li>
-                    @empty
-                        <li class="text-gray-600 text-sm">Pas encore de badge.</li>
-                    @endforelse
-                </ul>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="p-6 bg-white shadow rounded">
-                    <h3 class="font-semibold mb-2">Projets</h3>
-                    <ul class="space-y-2">
-                        @forelse ($projects as $project)
-                            <li>
-                                <a href="{{ route('projects.show', $project) }}" class="font-medium underline">{{ $project->title }}</a>
-                                <span class="text-sm text-gray-600">· {{ $project->pivot->role->label() }} · {{ $project->status->label() }}</span>
-                            </li>
-                        @empty
-                            <li class="text-gray-600 text-sm">Aucun projet.</li>
-                        @endforelse
-                    </ul>
+                        <div class="mt-5 space-y-4">
+                            @foreach (['expert', 'advanced', 'intermediate', 'beginner'] as $level)
+                                @if ($skillsByLevel->has($level))
+                                    <div>
+                                        <p class="caption">
+                                            {{ \App\Enums\SkillLevel::from($level)->label() }}
+                                        </p>
+                                        <ul class="mt-2 flex flex-wrap gap-1.5">
+                                            @foreach ($skillsByLevel[$level] as $skill)
+                                                <li class="{{ $level === 'expert' ? 'chip' : 'chip' }}">{{ $skill->name }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    @else
+                        <p class="muted mt-4">Aucune compétence renseignée pour le moment.</p>
+                    @endif
                 </div>
 
-                <div class="p-6 bg-white shadow rounded">
-                    <h3 class="font-semibold mb-2">Ressources</h3>
-                    <ul class="space-y-2">
-                        @forelse ($resources as $resource)
-                            <li>
-                                <a href="{{ route('resources.show', $resource) }}" class="font-medium underline">{{ $resource->title }}</a>
-                                <span class="text-sm text-gray-600">· {{ $resource->type->label() }}
-                                    @if ($resource->rating_avg) · ★ {{ number_format($resource->rating_avg, 1, ',', ' ') }} @endif
-                                </span>
-                            </li>
-                        @empty
-                            <li class="text-gray-600 text-sm">Aucune ressource.</li>
-                        @endforelse
-                    </ul>
+                {{-- Projets --}}
+                <div class="panel">
+                    <x-section-heading title="Projets" :count="$projects->count()" />
+
+                    @if ($projects->isNotEmpty())
+                        <ul class="mt-5 space-y-2.5">
+                            @foreach ($projects as $project)
+                                <li>
+                                    <a href="{{ route('projects.show', $project) }}"
+                                       class="group flex items-center justify-between gap-4 rounded-lg border border-ink-200 p-3.5 transition hover:border-brand-300 hover:bg-brand-50 dark:border-ink-800 dark:hover:border-brand-700 dark:hover:bg-ink-800">
+                                        <div class="min-w-0">
+                                            <p class="truncate font-medium text-ink-900 group-hover:text-brand-700 dark:text-white dark:group-hover:text-brand-300">
+                                                {{ $project->title }}
+                                            </p>
+                                            <p class="mt-1 flex flex-wrap items-center gap-x-2 text-xs text-ink-500 dark:text-ink-400">
+                                                <span>{{ $project->pivot->role->label() }}</span>
+                                                @if ($project->country)
+                                                    <span class="text-ink-300 dark:text-ink-700">·</span>
+                                                    <x-flag :country="$project->country" /><span>{{ $project->country->name }}</span>
+                                                @endif
+                                            </p>
+                                        </div>
+
+                                        <x-project-status :status="$project->status" class="shrink-0" />
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p class="muted mt-4">Aucun projet pour l'instant.</p>
+                    @endif
+                </div>
+
+                {{-- Ressources --}}
+                <div class="panel">
+                    <x-section-heading title="Ressources publiées" :count="$resources->count()" />
+
+                    @if ($resources->isNotEmpty())
+                        <ul class="mt-5 space-y-2.5">
+                            @foreach ($resources as $resource)
+                                <li>
+                                    {{-- Titre cliquable : depuis un profil, on veut
+                                         ouvrir la ressource, pas seulement la lire. --}}
+                                    <a
+                                        href="{{ route('resources.show', $resource) }}"
+                                        class="group flex items-center justify-between gap-4 rounded-lg border border-ink-200 p-3.5 transition hover:border-brand-300 hover:bg-brand-50 dark:border-ink-800 dark:hover:border-brand-700 dark:hover:bg-ink-800"
+                                    >
+                                        <div class="min-w-0">
+                                            <p class="truncate font-medium text-ink-900 group-hover:text-brand-700 dark:text-white dark:group-hover:text-brand-300">
+                                                {{ $resource->title }}
+                                            </p>
+                                            <p class="mt-1 text-xs text-ink-500 dark:text-ink-400">{{ $resource->type->label() }}</p>
+                                        </div>
+
+                                        <div class="flex shrink-0 items-center gap-3 text-xs text-ink-500 dark:text-ink-400">
+                                            @if ($resource->rating_avg)
+                                                <span class="inline-flex items-center gap-1">
+                                                    <x-icon name="star" class="h-3.5 w-3.5 text-amber-500" />
+                                                    <span class="tabular font-medium">{{ number_format($resource->rating_avg, 1, ',', ' ') }}</span>
+                                                </span>
+                                            @endif
+
+                                            <span class="inline-flex items-center gap-1">
+                                                <x-icon name="heart" class="h-3.5 w-3.5" />
+                                                <span class="tabular">{{ $resource->likes_count }}</span>
+                                            </span>
+                                        </div>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p class="muted mt-4">Aucune ressource publiée.</p>
+                    @endif
                 </div>
             </div>
+
+            {{-- Colonne latérale --}}
+            <aside class="space-y-6">
+
+                {{-- Proposer une collaboration --}}
+                @if ($invitableProjects->isNotEmpty())
+                    {{-- L'URL d'envoi n'est plus fabriquée par concaténation dans
+                         le navigateur : chaque option porte directement l'URL
+                         complète, générée par `route()` côté serveur. Rien de ce
+                         qui vient du DOM n'entre dans la construction du chemin. --}}
+                    <form
+                        method="POST"
+                        x-data="{ action: @js(route('projects.invitations.store', $invitableProjects->first())) }"
+                        :action="action"
+                        class="panel border-brand-300 dark:border-brand-700"
+                    >
+                        @csrf
+                        <input type="hidden" name="user_id" value="{{ $user->id }}">
+
+                        <x-section-heading title="Proposer une collaboration" />
+
+                        <p class="muted mt-3">
+                            Invitez {{ $user->first_name ?? $user->name }} à rejoindre un de vos projets.
+                        </p>
+
+                        <div class="mt-4 space-y-3">
+                            <div>
+                                <label for="invite-project" class="label">Projet</label>
+                                <select id="invite-project" x-model="action" class="select">
+                                    @foreach ($invitableProjects as $project)
+                                        <option value="{{ route('projects.invitations.store', $project) }}">{{ $project->title }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div x-data="charCounter('', 1000)">
+                                <label for="invite-message" class="label">
+                                    Message <span class="label-hint">facultatif</span>
+                                </label>
+                                <textarea
+                                    id="invite-message"
+                                    name="message"
+                                    x-model="value"
+                                    rows="3"
+                                    maxlength="1000"
+                                    class="textarea"
+                                    placeholder="Bonjour, ton profil correspond à notre projet…"
+                                ></textarea>
+                                <p class="field-hint text-right" :class="isNearLimit && 'text-amber-600'">
+                                    <span class="tabular" x-text="length">0</span> / 1000
+                                </p>
+                            </div>
+
+                            <x-input-error :messages="$errors->get('collaboration')" />
+
+                            <button type="submit" class="btn-primary btn-block">
+                                <x-icon name="send" class="h-4 w-4" />
+                                Envoyer l'invitation
+                            </button>
+                        </div>
+                    </form>
+                @endif
+
+                {{-- Badges --}}
+                <div class="panel">
+                    <x-section-heading title="Badges" :count="$user->badges->count()" />
+
+                    {{--
+                        Icône du jeu de l'application, pas l'emoji stocké en base :
+                        un emoji ne se rend pas pareil d'un système à l'autre et
+                        détonne au milieu d'une interface dessinée.
+                    --}}
+                    @if ($user->badges->isNotEmpty())
+                        <ul class="mt-4 space-y-2.5">
+                            @foreach ($user->badges as $badge)
+                                <li class="flex items-start gap-3 rounded-lg border border-ink-200 p-3 dark:border-ink-800">
+                                    <x-badge-icon :badge="$badge" class="mt-0.5 h-5 w-5 shrink-0 text-brand-600 dark:text-brand-400" />
+
+                                    <div class="min-w-0">
+                                        <p class="text-sm font-semibold text-ink-900 dark:text-white">{{ $badge->name }}</p>
+                                        <p class="mt-0.5 text-xs text-ink-600 dark:text-ink-400">{{ $badge->description }}</p>
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p class="muted mt-4">Pas encore de badge.</p>
+                    @endif
+                </div>
+
+                {{-- Chiffres complémentaires --}}
+                <div class="panel">
+                    <x-section-heading title="En résumé" />
+
+                    <dl class="mt-4 space-y-3 text-sm">
+                        @if ($ratingAvg)
+                            <div class="flex items-center justify-between gap-4">
+                                <dt class="text-ink-600 dark:text-ink-400">Note moyenne</dt>
+                                <dd class="tabular inline-flex items-center gap-1 font-semibold text-ink-900 dark:text-white">
+                                    <x-icon name="star" class="h-3.5 w-3.5 text-amber-500" />
+                                    {{ number_format($ratingAvg, 1, ',', ' ') }}
+                                </dd>
+                            </div>
+                        @endif
+
+                        <div class="flex items-center justify-between gap-4">
+                            <dt class="text-ink-600 dark:text-ink-400">Abonnements</dt>
+                            <dd class="tabular font-semibold text-ink-900 dark:text-white">{{ $user->following_count }}</dd>
+                        </div>
+
+                        <div class="flex items-center justify-between gap-4">
+                            <dt class="text-ink-600 dark:text-ink-400">Membre depuis</dt>
+                            <dd class="font-semibold text-ink-900 dark:text-white">{{ $user->created_at->translatedFormat('F Y') }}</dd>
+                        </div>
+                    </dl>
+                </div>
+            </aside>
         </div>
     </div>
 </x-app-layout>

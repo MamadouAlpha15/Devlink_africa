@@ -2,7 +2,518 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Hide Alpine elements (e.g. the notification dropdown) until Alpine has started. */
-[x-cloak] {
-    display: none !important;
+/*
+|--------------------------------------------------------------------------
+| Base
+|--------------------------------------------------------------------------
+| Le corps de texte de l'interface est à 15 px : c'est le réglage des
+| produits denses (Linear, GitHub, Attio), plus net qu'un 16 px de site
+| vitrine. Les deux thèmes sont définis ici une seule fois.
+*/
+@layer base {
+    html {
+        @apply scroll-smooth antialiased;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+        @apply bg-ink-50 text-[0.9375rem] leading-[1.6] text-ink-900
+               dark:bg-ink-950 dark:text-ink-100;
+        /* Inter : chiffres tabulaires contextuels et ligatures standard. */
+        font-feature-settings: 'cv05' 1, 'cv11' 1, 'calt' 1;
+    }
+
+    /* Les titres se resserrent quand ils grandissent. */
+    h1, h2, h3, h4 {
+        @apply font-semibold tracking-tight text-ink-900 dark:text-white;
+    }
+
+    ::selection {
+        @apply bg-brand-600/[0.15] text-ink-900 dark:bg-brand-400/25 dark:text-white;
+    }
+
+    /* Alpine : masque les éléments `x-cloak` avant l'initialisation. */
+    [x-cloak] {
+        display: none !important;
+    }
+
+    /* Anneau de focus au clavier uniquement. Les champs ont le leur. */
+    :focus:not(:focus-visible) {
+        @apply outline-none;
+    }
+
+    :focus-visible:not(.input):not(.textarea):not(.select) {
+        @apply outline-none ring-2 ring-brand-500 ring-offset-1 ring-offset-ink-50 dark:ring-offset-ink-950;
+    }
+
+    ::-webkit-scrollbar {
+        @apply h-2 w-2;
+    }
+
+    ::-webkit-scrollbar-track {
+        @apply bg-transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        @apply rounded-full bg-ink-300 dark:bg-ink-700;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        @apply bg-ink-400 dark:bg-ink-600;
+    }
+}
+
+/*
+|--------------------------------------------------------------------------
+| Composants
+|--------------------------------------------------------------------------
+| Chaque classe porte déjà sa variante sombre : une seule source de vérité
+| pour les deux thèmes.
+*/
+@layer components {
+
+    /* ----- Surfaces ----------------------------------------------------
+       Trois niveaux, et c'est tout :
+       - pas de surface  : le vide suffit à grouper (sections d'accueil) ;
+       - .card           : une bordure contient une liste ou une fiche ;
+       - .card-raised    : une ombre fait flotter LA surface actionnable
+                           de l'écran, ou un calque (menu, modale).         */
+
+    .card {
+        @apply rounded-xl border border-ink-200 bg-white
+               dark:border-ink-800 dark:bg-ink-900;
+    }
+
+    .card-raised {
+        @apply card shadow-card;
+    }
+
+    /* Carte cliquable : un seul signal au survol, un changement de teinte. */
+    .card-interactive {
+        @apply card transition-colors duration-150
+               hover:border-ink-300 hover:bg-ink-50/70
+               dark:hover:border-ink-700 dark:hover:bg-ink-800/40;
+    }
+
+    .panel {
+        @apply card p-5 sm:p-6;
+    }
+
+    .panel-raised {
+        @apply card-raised p-5 sm:p-6;
+    }
+
+    /* Bloc en retrait à l'intérieur d'une carte. */
+    .surface-muted {
+        @apply rounded-lg border border-ink-200 bg-ink-50 dark:border-ink-800 dark:bg-ink-950/60;
+    }
+
+    .divider {
+        @apply border-t border-ink-200 dark:border-ink-800;
+    }
+
+    /* ----- Typographie --------------------------------------------------
+       Quatre niveaux, avec de vrais sauts : 12 · 14/15 · 20 · 28.          */
+
+    .page-title {
+        @apply text-[1.75rem] font-semibold leading-[1.12] tracking-[-0.022em]
+               text-ink-900 sm:text-[2rem] dark:text-white;
+    }
+
+    .section-title {
+        @apply text-xl font-semibold leading-[1.25] tracking-[-0.015em]
+               text-ink-900 dark:text-white;
+    }
+
+    .card-title {
+        @apply text-[0.9375rem] font-semibold leading-[1.35] text-ink-900 dark:text-white;
+    }
+
+    /* Paragraphe d'introduction, une fois par écran. */
+    .lead {
+        @apply text-[1.0625rem] leading-[1.65] text-ink-600 dark:text-ink-300;
+    }
+
+    /* Texte de lecture courant. */
+    .body-text {
+        @apply text-[0.9375rem] leading-[1.6] text-ink-600 dark:text-ink-300;
+    }
+
+    /* Métadonnée : date, compteur, précision sous un titre. */
+    .muted {
+        @apply text-sm text-ink-600 dark:text-ink-400;
+    }
+
+    .subtle {
+        @apply text-xs text-ink-500 dark:text-ink-500;
+    }
+
+    /* Étiquette d un groupe à l intérieur d une carte. Pas de capitales :
+       à 12 px, les capitales sont le réglage le moins lisible. */
+    .caption {
+        @apply text-xs font-semibold text-ink-500 dark:text-ink-400;
+    }
+
+    /* Sur-titre de section. Neutre : il structure, il n'attire pas. */
+    .eyebrow {
+        @apply text-xs font-semibold text-ink-500 dark:text-ink-400;
+    }
+
+    /* Chiffres alignés verticalement (scores, compteurs, pourcentages). */
+    .tabular {
+        font-variant-numeric: tabular-nums;
+    }
+
+    .link {
+        @apply font-medium text-brand-600 underline-offset-[3px] transition-colors
+               hover:text-brand-700 hover:underline
+               dark:text-brand-400 dark:hover:text-brand-300;
+    }
+
+    .link-muted {
+        @apply text-ink-600 underline-offset-[3px] transition-colors
+               hover:text-ink-900 hover:underline
+               dark:text-ink-400 dark:hover:text-ink-100;
+    }
+
+    /* ----- Boutons -----------------------------------------------------
+       Une seule silhouette : 8 px de rayon à toutes les tailles, aucune
+       ombre (un bouton plein est déjà l'objet le plus contrasté).         */
+
+    .btn {
+        @apply inline-flex h-10 shrink-0 select-none items-center justify-center gap-2
+               whitespace-nowrap rounded-lg px-4 text-sm font-medium leading-none
+               transition-colors duration-150
+               disabled:pointer-events-none disabled:opacity-40;
+    }
+
+    .btn-primary {
+        @apply btn bg-brand-600 font-semibold text-white
+               hover:bg-brand-700 active:bg-brand-800
+               dark:bg-brand-500 dark:hover:bg-brand-400 dark:active:bg-brand-600;
+        /* Arête supérieure éclairée plutôt qu'une ombre portée. */
+        box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.12);
+    }
+
+    .btn-secondary {
+        @apply btn border border-ink-300 bg-white text-ink-700
+               hover:border-ink-400 hover:bg-ink-50 hover:text-ink-900
+               dark:border-ink-700 dark:bg-ink-900 dark:text-ink-200
+               dark:hover:border-ink-600 dark:hover:bg-ink-800 dark:hover:text-white;
+    }
+
+    .btn-ghost {
+        @apply btn text-ink-600 hover:bg-ink-100 hover:text-ink-900
+               dark:text-ink-400 dark:hover:bg-ink-800 dark:hover:text-white;
+    }
+
+    .btn-danger {
+        @apply btn bg-red-600 font-semibold text-white hover:bg-red-700 active:bg-red-800
+               dark:bg-red-600 dark:hover:bg-red-500;
+    }
+
+    /* Action destructrice discrète, à l'intérieur d'une liste. */
+    .btn-danger-ghost {
+        @apply btn text-red-600 hover:bg-red-50 hover:text-red-700
+               dark:text-red-400 dark:hover:bg-red-950/50 dark:hover:text-red-300;
+    }
+
+    .btn-xs {
+        @apply h-8 gap-1.5 px-2.5 text-xs;
+    }
+
+    .btn-sm {
+        @apply h-9 gap-1.5 px-3 text-sm;
+    }
+
+    .btn-lg {
+        @apply h-12 px-6 text-[0.9375rem];
+    }
+
+    .btn-block {
+        @apply w-full;
+    }
+
+    /* Bouton ne contenant qu'une icône. */
+    .btn-square {
+        @apply w-10 px-0;
+    }
+
+    .btn-sm.btn-square {
+        @apply w-9;
+    }
+
+    /* ----- Formulaires -------------------------------------------------
+       Un champ est creux : il porte une bordure, jamais d'ombre.          */
+
+    .label {
+        @apply mb-1.5 block text-sm font-medium text-ink-700 dark:text-ink-300;
+    }
+
+    .label-hint {
+        @apply ml-1 text-xs font-normal text-ink-500 dark:text-ink-500;
+    }
+
+    .input,
+    .textarea,
+    .select {
+        @apply block w-full rounded-lg border-ink-300 bg-white text-sm text-ink-900
+               placeholder:text-ink-400
+               focus:border-brand-600 focus:ring-[3px] focus:ring-brand-600/[0.12]
+               disabled:cursor-not-allowed disabled:bg-ink-100 disabled:text-ink-500
+               dark:border-ink-700 dark:bg-ink-950 dark:text-ink-100
+               dark:placeholder:text-ink-500 dark:focus:border-brand-400
+               dark:focus:ring-brand-400/[0.15] dark:disabled:bg-ink-900;
+    }
+
+    .input,
+    .select {
+        @apply h-10 px-3;
+    }
+
+    .textarea {
+        @apply px-3 py-2.5 leading-[1.6];
+    }
+
+    .checkbox {
+        @apply h-4 w-4 shrink-0 rounded border-ink-300 bg-white text-brand-600
+               focus:ring-[3px] focus:ring-brand-600/[0.15] focus:ring-offset-0
+               dark:border-ink-600 dark:bg-ink-950 dark:checked:bg-brand-500;
+    }
+
+    /* Toute la ligne « case à cocher + libellé » est cliquable. */
+    .checkbox-row {
+        @apply flex cursor-pointer items-start gap-3 rounded-lg px-3 py-2 transition-colors
+               hover:bg-ink-50 dark:hover:bg-ink-800/60;
+    }
+
+    .file-field {
+        @apply block w-full cursor-pointer rounded-lg border border-dashed border-ink-300
+               bg-ink-50 px-3 py-3 text-sm text-ink-600 transition-colors
+               hover:border-ink-400 hover:bg-ink-100
+               file:mr-3 file:rounded-md file:border-0 file:bg-ink-200 file:px-3 file:py-1.5
+               file:text-xs file:font-medium file:text-ink-700
+               dark:border-ink-700 dark:bg-ink-950/60 dark:text-ink-400
+               dark:hover:border-ink-600 dark:hover:bg-ink-900
+               dark:file:bg-ink-800 dark:file:text-ink-200;
+    }
+
+    .field-hint {
+        @apply mt-1.5 text-xs text-ink-500 dark:text-ink-500;
+    }
+
+    /* Champ de recherche avec icône : .input-group > svg + .input */
+    .input-group {
+        @apply relative;
+    }
+
+    .input-group > svg:first-child {
+        @apply pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-400;
+    }
+
+    .input-group > .input {
+        @apply pl-9;
+    }
+
+    /* ----- Étiquettes --------------------------------------------------
+       Deux objets seulement : .chip pour la taxonomie, .badge pour l'état. */
+
+    .chip {
+        @apply inline-flex items-center gap-1.5 rounded-md border border-ink-200 bg-ink-50
+               px-2 py-1 text-xs font-medium text-ink-700
+               dark:border-ink-800 dark:bg-ink-800 dark:text-ink-200;
+    }
+
+    /* Compétence qui correspond à la recherche : marquée par le poids,
+       pas par la teinte. */
+    .chip-strong {
+        @apply chip border-ink-300 bg-white font-semibold text-ink-900
+               dark:border-ink-600 dark:bg-ink-800 dark:text-white;
+    }
+
+    /* Filtre cliquable. */
+    .chip-button {
+        @apply inline-flex items-center gap-1.5 rounded-md border border-ink-200 bg-white
+               px-2.5 py-1.5 text-xs font-medium text-ink-700 transition-colors
+               hover:border-ink-300 hover:bg-ink-50
+               dark:border-ink-700 dark:bg-ink-900 dark:text-ink-300
+               dark:hover:border-ink-600 dark:hover:bg-ink-800;
+    }
+
+    .chip-button-active {
+        @apply border-ink-900 bg-ink-900 text-white
+               hover:border-ink-800 hover:bg-ink-800 hover:text-white
+               dark:border-ink-100 dark:bg-ink-100 dark:text-ink-900
+               dark:hover:bg-white dark:hover:text-ink-900;
+    }
+
+    .badge {
+        @apply inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-medium;
+    }
+
+    .badge-neutral {
+        @apply badge bg-ink-100 text-ink-700 dark:bg-ink-800 dark:text-ink-300;
+    }
+
+    .badge-success {
+        @apply badge bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300;
+    }
+
+    .badge-warning {
+        @apply badge bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300;
+    }
+
+    .badge-danger {
+        @apply badge bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300;
+    }
+
+    /* ----- Messages ---------------------------------------------------- */
+
+    .alert {
+        @apply flex items-start gap-3 rounded-lg border p-4 text-sm;
+    }
+
+    .alert-success {
+        @apply alert border-emerald-200 bg-emerald-50 text-emerald-800
+               dark:border-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-200;
+    }
+
+    .alert-warning {
+        @apply alert border-amber-200 bg-amber-50 text-amber-800
+               dark:border-amber-900 dark:bg-amber-950/60 dark:text-amber-200;
+    }
+
+    .alert-danger {
+        @apply alert border-red-200 bg-red-50 text-red-800
+               dark:border-red-900 dark:bg-red-950/60 dark:text-red-200;
+    }
+
+    .alert-info {
+        @apply alert border-ink-200 bg-ink-50 text-ink-700
+               dark:border-ink-800 dark:bg-ink-900 dark:text-ink-300;
+    }
+
+    /* ----- Navigation --------------------------------------------------
+       L'état actif est neutre : l'indigo reste réservé à l'action.        */
+
+    .nav-item {
+        @apply inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium
+               text-ink-600 transition-colors
+               hover:bg-ink-100 hover:text-ink-900
+               dark:text-ink-400 dark:hover:bg-ink-800 dark:hover:text-white;
+    }
+
+    .nav-item-active {
+        @apply bg-ink-100 text-ink-900 hover:bg-ink-200
+               dark:bg-ink-800 dark:text-white dark:hover:bg-ink-700;
+    }
+
+    .nav-item-mobile {
+        @apply flex items-center gap-3 rounded-lg px-3 py-2.5 text-[0.9375rem] font-medium
+               text-ink-700 transition-colors
+               hover:bg-ink-100 dark:text-ink-300 dark:hover:bg-ink-800;
+    }
+
+    .nav-item-mobile-active {
+        @apply bg-ink-100 text-ink-900 dark:bg-ink-800 dark:text-white;
+    }
+
+    .dropdown-item {
+        @apply flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm text-ink-700
+               transition-colors hover:bg-ink-100 hover:text-ink-900
+               dark:text-ink-300 dark:hover:bg-ink-800 dark:hover:text-white;
+    }
+
+    /* ----- Indicateurs -------------------------------------------------- */
+
+    /* Pastille d'état. Immobile : un état stable ne doit pas bouger. */
+    .dot {
+        @apply inline-block h-1.5 w-1.5 shrink-0 rounded-full;
+    }
+
+    .progress-track {
+        @apply h-1.5 w-full overflow-hidden rounded-full bg-ink-200 dark:bg-ink-800;
+    }
+
+    .progress-bar {
+        @apply h-full rounded-full bg-ink-900 transition-all duration-700 ease-snap dark:bg-ink-100;
+    }
+
+    .stat-value {
+        @apply tabular text-xl font-semibold tracking-[-0.015em] text-ink-900 dark:text-white;
+    }
+
+    .stat-label {
+        @apply mt-0.5 text-xs text-ink-500 dark:text-ink-400;
+    }
+
+    /* ----- Divers -------------------------------------------------------- */
+
+    .empty-state {
+        @apply flex flex-col items-center justify-center rounded-xl border border-dashed
+               border-ink-300 bg-white px-6 py-14 text-center
+               dark:border-ink-700 dark:bg-ink-900/50;
+    }
+
+    /* Initiales : neutres, elles ne sont pas une décoration de marque. */
+    .avatar-fallback {
+        @apply flex shrink-0 items-center justify-center rounded-full bg-ink-100
+               font-medium uppercase tracking-[0.02em] text-ink-600
+               dark:bg-ink-800 dark:text-ink-300;
+    }
+
+    /* Drapeau : SVG 4/3, arête adoucie par un liseré interne. */
+    .flag {
+        @apply inline-block shrink-0 rounded-[2px] object-cover ring-1 ring-inset ring-ink-900/10
+               dark:ring-white/[0.15];
+    }
+
+    .kbd {
+        @apply inline-flex h-5 items-center rounded border border-ink-300 bg-ink-100 px-1.5
+               font-mono text-[0.6875rem] font-medium text-ink-600
+               dark:border-ink-700 dark:bg-ink-800 dark:text-ink-400;
+    }
+}
+
+/*
+|--------------------------------------------------------------------------
+| Mouvement
+|--------------------------------------------------------------------------
+| Règles du motion design de ce produit :
+|
+| 1. Le mouvement sert à guider l'entrée d'un contenu, jamais à décorer.
+| 2. Chaque élément ne s'anime qu'UNE fois, à sa première apparition.
+| 3. Rien ne boucle. Aucune animation permanente dans l'interface.
+| 4. On n'anime que `opacity` et `transform` : ces deux propriétés sont
+|    traitées par le compositeur, donc sans recalcul de mise en page ni
+|    décalage visuel (CLS).
+| 5. L'état masqué n'est posé QUE si JavaScript est actif (classe `js` sur
+|    <html>, posée avant le premier rendu) : sans JS, tout reste visible.
+| 6. `prefers-reduced-motion` désactive tout, sans rien masquer.
+*/
+@media (prefers-reduced-motion: no-preference) {
+    .js .reveal {
+        opacity: 0;
+        transform: translateY(0.625rem);
+    }
+
+    .js .reveal.is-visible {
+        opacity: 1;
+        transform: none;
+        transition:
+            opacity 500ms cubic-bezier(0.32, 0.72, 0, 1),
+            transform 500ms cubic-bezier(0.32, 0.72, 0, 1);
+        transition-delay: var(--reveal-delay, 0ms);
+    }
+
+    /* Barre de score : se remplit en arrivant à l'écran. */
+    .js .reveal-bar > .progress-bar {
+        width: 0 !important;
+        transition: width 800ms cubic-bezier(0.32, 0.72, 0, 1);
+        transition-delay: var(--reveal-delay, 0ms);
+    }
+
+    .js .reveal-bar.is-visible > .progress-bar {
+        width: var(--bar-width) !important;
+    }
 }

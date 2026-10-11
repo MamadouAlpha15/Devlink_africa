@@ -1,39 +1,75 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('password.store') }}">
+{{-- Choix d'un nouveau mot de passe. Champs : token, email, password, password_confirmation. --}}
+<x-guest-layout title="Nouveau mot de passe">
+    <x-slot name="heading">Nouveau mot de passe</x-slot>
+    <x-slot name="subheading">Choisissez un mot de passe que vous n'utilisez nulle part ailleurs.</x-slot>
+
+    <form method="POST" action="{{ route('password.store') }}" class="space-y-5">
         @csrf
 
-        <!-- Password Reset Token -->
         <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
-        <!-- Email Address -->
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            <label for="email" class="label">Adresse e-mail</label>
+            <input
+                id="email"
+                type="email"
+                name="email"
+                value="{{ old('email', $request->email) }}"
+                required
+                autofocus
+                autocomplete="username"
+                class="input"
+            >
+            <x-input-error :messages="$errors->get('email')" />
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <div x-data="{ isVisible: false }">
+            <label for="password" class="label">Nouveau mot de passe</label>
+
+            <div class="relative">
+                <input
+                    id="password"
+                    :type="isVisible ? 'text' : 'password'"
+                    type="password"
+                    name="password"
+                    required
+                    autocomplete="new-password"
+                    class="input pr-11"
+                    placeholder="••••••••"
+                >
+
+                <button
+                    type="button"
+                    @click="isVisible = ! isVisible"
+                    class="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-ink-400 transition hover:text-ink-700 dark:hover:text-ink-200"
+                    :aria-label="isVisible ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+                >
+                    <x-icon name="eye" class="h-4 w-4" x-show="! isVisible" />
+                    <x-icon name="eye-off" class="h-4 w-4" x-show="isVisible" x-cloak />
+                </button>
+            </div>
+
+            <p class="field-hint">8 caractères minimum.</p>
+            <x-input-error :messages="$errors->get('password')" />
         </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                                type="password"
-                                name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+        <div>
+            <label for="password_confirmation" class="label">Confirmer le mot de passe</label>
+            <input
+                id="password_confirmation"
+                type="password"
+                name="password_confirmation"
+                required
+                autocomplete="new-password"
+                class="input"
+                placeholder="••••••••"
+            >
+            <x-input-error :messages="$errors->get('password_confirmation')" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Reset Password') }}
-            </x-primary-button>
-        </div>
+        <button type="submit" class="btn-primary btn-block">
+            <x-icon name="check" class="h-4 w-4" />
+            Changer mon mot de passe
+        </button>
     </form>
 </x-guest-layout>
