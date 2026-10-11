@@ -153,6 +153,21 @@ class DevLinkAiTest extends TestCase
         $this->actingAs(User::factory()->create())->post('/ai', ['query' => 'court'])->assertSessionHasErrors('query');
     }
 
+    public function test_errors_are_in_french(): void
+    {
+        $this->actingAs(User::factory()->create())->post('/ai', ['query' => ''])
+            ->assertSessionHasErrors(['query' => 'Le champ demande est obligatoire.']);
+    }
+
+    public function test_the_search_field_is_not_disabled_while_searching(): void
+    {
+        // A disabled field is not sent by the browser: the search would arrive empty.
+        $this->actingAs(User::factory()->create())->get('/ai')
+            ->assertOk()
+            ->assertDontSee(':disabled="isSearching"', false)
+            ->assertSee(':readonly="isSearching"', false);
+    }
+
     public function test_the_local_analyser_takes_over_when_claude_fails(): void
     {
         $this->developer('Ibrahim Sow', 'GN', ['flutter' => 'expert']);
