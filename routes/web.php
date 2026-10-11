@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AiSearchController;
 use App\Http\Controllers\CollaborationRequestController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\DeveloperProfileController;
 use App\Http\Controllers\DevScoreController;
@@ -21,9 +22,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', DashboardController::class)->middleware(['auth', 'verified'])->name('dashboard');
 
 // Find developers + public developer profiles
 Route::get('/devs', [DeveloperController::class, 'index'])->name('devs.index');
