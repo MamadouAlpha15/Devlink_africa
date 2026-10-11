@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin;
 use App\Http\Controllers\AiSearchController;
 use App\Http\Controllers\CollaborationRequestController;
 use App\Http\Controllers\DashboardController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectMemberController;
 use App\Http\Controllers\ProjectRoleController;
 use App\Http\Controllers\RankingController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\ResourceInteractionController;
 use App\Http\Controllers\UserSkillController;
@@ -104,6 +106,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/favorites/{type}/{id}', [FavoriteController::class, 'destroy'])
         ->whereIn('type', array_keys(FavoriteController::TYPES))->whereNumber('id')->name('favorites.destroy');
 
+    // Reports (profile, resource, project, comment)
+    Route::post('/reports/{type}/{id}', [ReportController::class, 'store'])
+        ->whereIn('type', array_keys(ReportController::TYPES))->whereNumber('id')
+        ->middleware('throttle:10,1')->name('reports.store');
+
     // My DevScore
     Route::get('/devscore', [DevScoreController::class, 'show'])->name('devscore.show');
 
@@ -111,6 +118,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/projects/{project}/members/{member}', [ProjectMemberController::class, 'update'])->name('projects.members.update');
     Route::delete('/projects/{project}/members/{member}', [ProjectMemberController::class, 'destroy'])->name('projects.members.destroy');
     Route::post('/projects/{project}/leave', [ProjectMemberController::class, 'leave'])->name('projects.leave');
+});
+
+// Administration (admins only)
+Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', Admin\DashboardController::class)->name('dashboard');
+
+    Route::get('/users', [Admin\UserController::class, 'index'])->name('users.index');
+    Route::post('/users/{user}/suspend', [Admin\UserController::class, 'suspend'])->name('users.suspend');
+    Route::post('/users/{user}/unsuspend', [Admin\UserController::class, 'unsuspend'])->name('users.unsuspend');
+    Route::delete('/users/{user}', [Admin\UserController::class, 'destroy'])->name('users.destroy');
+
+    Route::get('/resources', [Admin\ContentController::class, 'resources'])->name('resources.index');
+    Route::post('/resources/{resource}/approve', [Admin\ContentController::class, 'approve'])->name('resources.approve');
+    Route::post('/resources/{resource}/reject', [Admin\ContentController::class, 'reject'])->name('resources.reject');
+    Route::delete('/resources/{resource}', [Admin\ContentController::class, 'destroyResource'])->name('resources.destroy');
+
+    Route::get('/projects', [Admin\ContentController::class, 'projects'])->name('projects.index');
+    Route::delete('/projects/{project}', [Admin\ContentController::class, 'destroyProject'])->name('projects.destroy');
+
+    Route::get('/reports', [Admin\ReportController::class, 'index'])->name('reports.index');
+    Route::post('/reports/{report}', [Admin\ReportController::class, 'handle'])->name('reports.handle');
 });
 
 // African ranking (public)

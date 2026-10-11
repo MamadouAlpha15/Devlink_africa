@@ -54,7 +54,7 @@
                     <a href="{{ route('resources.edit', $resource) }}" class="underline">Modifier</a>
                 @endif
                 @include('partials.favorite-button', ['type' => 'resource', 'model' => $resource])
-                {{-- À venir : Signaler --}}
+                @include('partials.report-button', ['type' => 'resource', 'model' => $resource, 'authorId' => $resource->user_id])
             </div>
 
             <div class="p-6 bg-white shadow rounded">
@@ -113,6 +113,7 @@
                                 <button class="text-xs text-red-600">Supprimer</button>
                             </form>
                         @endcan
+                        @include('partials.report-button', ['type' => 'comment', 'model' => $comment, 'authorId' => $comment->user_id])
                     </div>
                 @endforeach
 

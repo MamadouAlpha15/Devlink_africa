@@ -58,7 +58,8 @@
                     @endif
                 @endif
                 @include('partials.favorite-button', ['type' => 'developer', 'model' => $user])
-                {{-- À venir : Contacter (messagerie), Signaler --}}
+                @include('partials.report-button', ['type' => 'developer', 'model' => $user, 'authorId' => $user->id])
+                {{-- À venir : Contacter (messagerie) --}}
 
                 @if ($user->github_url) <a href="{{ $user->github_url }}" target="_blank" rel="noopener" class="underline">GitHub</a> @endif
                 @if ($user->linkedin_url) <a href="{{ $user->linkedin_url }}" target="_blank" rel="noopener" class="underline">LinkedIn</a> @endif

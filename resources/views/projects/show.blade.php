@@ -32,6 +32,7 @@
                     <a href="{{ route('projects.edit', $project) }}" class="underline">Modifier le projet</a>
                 @endif
                 @include('partials.favorite-button', ['type' => 'project', 'model' => $project])
+                @include('partials.report-button', ['type' => 'project', 'model' => $project, 'authorId' => $project->owner_id])
 
                 @if ($viewerMembership && $viewerMembership->role !== \App\Enums\ProjectMemberRole::Owner)
                     <form method="POST" action="{{ route('projects.leave', $project) }}" onsubmit="return confirm('Quitter ce projet ?')">
