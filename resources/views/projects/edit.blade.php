@@ -1,29 +1,81 @@
 {{--
-    Modifier un projet — version fonctionnelle minimale (backend).
-    Le front-end la restylera : voir docs/front-end/projets.md.
+    Modifier un projet (propriétaire uniquement).
+    Les postes se gèrent depuis la fiche du projet, pas ici.
 --}}
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Modifier « {{ $project->title }} »</h2>
-    </x-slot>
+<x-app-layout :title="'Modifier '.$project->title">
+    <div class="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
 
-    <div class="py-8 max-w-3xl mx-auto px-4 space-y-6">
-        <form method="POST" action="{{ route('projects.update', $project) }}" enctype="multipart/form-data" class="p-6 bg-white shadow rounded space-y-4">
+        <x-page-header
+            :title="'Modifier « '.$project->title.' »'"
+            :back-link="route('projects.show', $project)"
+            back-label="Retour au projet"
+        />
+
+        <x-flash class="mt-6" />
+
+        <form
+            method="POST"
+            action="{{ route('projects.update', $project) }}"
+            enctype="multipart/form-data"
+            class="mt-6 space-y-6"
+        >
             @csrf
             @method('PUT')
 
-            @include('projects.partials.form-fields', ['project' => $project])
+            <div class="panel">
+                <x-section-heading title="Le projet" />
 
-            <div class="flex gap-4 items-center">
-                <x-primary-button>Enregistrer</x-primary-button>
-                <a href="{{ route('projects.show', $project) }}" class="underline text-sm">Annuler</a>
+                <div class="mt-5">
+                    @include('projects.partials.form-fields', ['project' => $project])
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-end gap-3">
+                <a href="{{ route('projects.show', $project) }}" class="btn-ghost">Annuler</a>
+
+                <button type="submit" class="btn-primary">
+                    <x-icon name="check" class="h-4 w-4" />
+                    Enregistrer les modifications
+                </button>
             </div>
         </form>
 
-        <form method="POST" action="{{ route('projects.destroy', $project) }}" onsubmit="return confirm('Supprimer définitivement ce projet ?')">
-            @csrf
-            @method('DELETE')
-            <x-danger-button>Supprimer le projet</x-danger-button>
-        </form>
+        {{-- Zone dangereuse --}}
+        <div class="panel mt-8 border-red-300 dark:border-red-900">
+            <h2 class="flex items-center gap-2.5 section-title">
+                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-50 text-red-600 dark:bg-red-950 dark:text-red-400">
+                    <x-icon name="alert-triangle" class="h-4 w-4" />
+                </span>
+                Supprimer le projet
+            </h2>
+
+            <p class="muted mt-3">
+                La suppression est définitive : le projet, ses postes, son équipe et
+                toutes les demandes associées disparaissent.
+            </p>
+
+            <form
+                method="POST"
+                action="{{ route('projects.destroy', $project) }}"
+                x-data="confirmAction"
+                class="mt-4"
+            >
+                @csrf
+                @method('DELETE')
+
+                <button type="button" x-show="! isConfirming" @click="ask()" class="btn-danger btn-sm">
+                    <x-icon name="trash" class="h-4 w-4" />
+                    Supprimer ce projet
+                </button>
+
+                <div x-show="isConfirming" x-cloak class="flex flex-wrap items-center gap-2">
+                    <span class="text-sm font-medium text-red-700 dark:text-red-400">
+                        Confirmer la suppression définitive&nbsp;?
+                    </span>
+                    <button type="submit" class="btn-danger btn-sm">Oui, supprimer</button>
+                    <button type="button" @click="cancel()" class="btn-ghost btn-sm">Annuler</button>
+                </div>
+            </form>
+        </div>
     </div>
 </x-app-layout>

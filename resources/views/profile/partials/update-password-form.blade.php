@@ -1,47 +1,55 @@
+{{-- Changement de mot de passe (PUT /password, erreurs dans le sac `updatePassword`). --}}
 <section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Update Password') }}
-        </h2>
+    <x-section-heading title="Mot de passe" />
 
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __('Ensure your account is using a long, random password to stay secure.') }}
-        </p>
-    </header>
+    <p class="muted mt-3">
+        Choisissez un mot de passe long et unique pour garder votre compte en sécurité.
+    </p>
 
-    <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('password.update') }}" class="mt-5 space-y-5">
         @csrf
         @method('put')
 
         <div>
-            <x-input-label for="update_password_current_password" :value="__('Current Password')" />
-            <x-text-input id="update_password_current_password" name="current_password" type="password" class="mt-1 block w-full" autocomplete="current-password" />
-            <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
+            <label for="update_password_current_password" class="label">Mot de passe actuel</label>
+            <input id="update_password_current_password" type="password" name="current_password"
+                   autocomplete="current-password" class="input" placeholder="••••••••">
+            <x-input-error :messages="$errors->updatePassword->get('current_password')" />
         </div>
 
-        <div>
-            <x-input-label for="update_password_password" :value="__('New Password')" />
-            <x-text-input id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-            <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
-        </div>
+        <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+                <label for="update_password_password" class="label">Nouveau mot de passe</label>
+                <input id="update_password_password" type="password" name="password"
+                       autocomplete="new-password" class="input" placeholder="••••••••">
+                <p class="field-hint">8 caractères minimum.</p>
+                <x-input-error :messages="$errors->updatePassword->get('password')" />
+            </div>
 
-        <div>
-            <x-input-label for="update_password_password_confirmation" :value="__('Confirm Password')" />
-            <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-            <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
+            <div>
+                <label for="update_password_password_confirmation" class="label">Confirmer</label>
+                <input id="update_password_password_confirmation" type="password" name="password_confirmation"
+                       autocomplete="new-password" class="input" placeholder="••••••••">
+                <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" />
+            </div>
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+            <button type="submit" class="btn-primary">
+                <x-icon name="check" class="h-4 w-4" />
+                Changer le mot de passe
+            </button>
 
             @if (session('status') === 'password-updated')
                 <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
-                >{{ __('Saved.') }}</p>
+                    x-data="dismissible(3000)"
+                    x-show="isVisible"
+                    x-transition.opacity
+                    class="inline-flex items-center gap-1.5 text-sm font-medium text-emerald-700 dark:text-emerald-400"
+                >
+                    <x-icon name="check-circle" class="h-4 w-4" />
+                    Enregistré
+                </p>
             @endif
         </div>
     </form>

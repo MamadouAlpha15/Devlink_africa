@@ -1,36 +1,34 @@
+{{--
+    Mise en page de l'application (membres et pages publiques).
+
+    Les pages peuvent passer un titre d'onglet :
+    <x-app-layout title="Trouver des développeurs">
+
+    Le slot `header` reste pris en charge pour compatibilité, mais les pages
+    refaites placent plutôt leur <x-page-header> directement dans le contenu.
+--}}
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
     <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-
-        <title>{{ config('app.name', 'Laravel') }}</title>
-
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @include('layouts.partials.head', ['title' => $attributes->get('title')])
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
 
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
+    <body class="flex min-h-full flex-col font-sans antialiased">
+        @include('layouts.navigation')
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
-        </div>
+        {{-- En-tête facultatif, sur une bande distincte du contenu. --}}
+        @isset($header)
+            <header class="border-b border-ink-200 bg-white dark:border-ink-800 dark:bg-ink-900">
+                <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                    {{ $header }}
+                </div>
+            </header>
+        @endisset
+
+        <main class="flex-1">
+            {{ $slot }}
+        </main>
+
+        @include('layouts.partials.footer')
     </body>
 </html>
