@@ -45,7 +45,9 @@
                     rows="3"
                     maxlength="500"
                     required
-                    :disabled="isSearching"
+                    {{-- readonly, pas disabled : un champ désactivé n'est pas envoyé par le navigateur,
+                         et la recherche partirait vide (« The demande field is required »). --}}
+                    :readonly="isSearching"
                     class="block w-full resize-none border-0 bg-transparent px-4 py-3.5 text-base leading-relaxed text-ink-900 placeholder:text-ink-400 focus:ring-0 dark:text-white dark:placeholder:text-ink-500"
                     placeholder="Je cherche un développeur Flutter en Guinée pour travailler sur une application de livraison."
                     @keydown.meta.enter="$el.form.requestSubmit()"
