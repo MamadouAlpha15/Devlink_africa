@@ -1,227 +1,361 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
-    <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                    </a>
-                </div>
+{{--
+    Barre de navigation principale, collée en haut de la page.
 
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('devs.index')" :active="request()->routeIs('devs.*')">
-                        Développeurs
-                    </x-nav-link>
-                    <x-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')">
-                        Projets
-                    </x-nav-link>
-                    <x-nav-link :href="route('resources.index')" :active="request()->routeIs('resources.*')">
-                        Ressources
-                    </x-nav-link>
-                    <x-nav-link :href="route('ranking.index')" :active="request()->routeIs('ranking.*')">
-                        Classement
-                    </x-nav-link>
+    Répartition : la barre ne porte que les destinations publiques
+    (Développeurs · Projets · Ressources · Classement) et DevLink AI, mis en
+    avant. Tout ce qui est personnel — mes collaborations, mon DevScore, mes
+    favoris — vit dans le menu du compte. Sans cela la barre déborderait dès
+    1024 px, et on ne distinguerait plus « explorer » de « chez moi ».
+--}}
+@php
+    // Liens de la barre, dans l'ordre de parcours : on cherche des personnes,
+    // puis des projets, puis des ressources, et on se compare au classement.
+    $navLinks = [
+        [
+            'label' => 'Développeurs',
+            'icon' => 'users',
+            'url' => route('devs.index'),
+            'active' => request()->routeIs('devs.*'),
+        ],
+        [
+            'label' => 'Projets',
+            'icon' => 'folder',
+            'url' => route('projects.index'),
+            'active' => request()->routeIs('projects.*'),
+        ],
+        [
+            'label' => 'Ressources',
+            'icon' => 'package',
+            'url' => route('resources.index'),
+            'active' => request()->routeIs('resources.*'),
+        ],
+        [
+            'label' => 'Classement',
+            'icon' => 'trophy',
+            'url' => route('ranking.index'),
+            'active' => request()->routeIs('ranking.*'),
+        ],
+    ];
+
+    // Liens personnels : menu du compte sur grand écran, menu mobile sinon.
+    $accountLinks = auth()->check()
+        ? [
+            ['label' => 'Mon profil public', 'icon' => 'user', 'url' => route('devs.show', auth()->user())],
+            ['label' => 'Modifier mon profil', 'icon' => 'pencil', 'url' => route('developer-profile.edit')],
+            ['label' => 'Mon DevScore', 'icon' => 'trending-up', 'url' => route('devscore.show')],
+            ['label' => 'Mes favoris', 'icon' => 'bookmark', 'url' => route('favorites.index')],
+            ['label' => 'Mes collaborations', 'icon' => 'handshake', 'url' => route('collaborations.index')],
+            ['label' => 'Compte', 'icon' => 'settings', 'url' => route('profile.edit')],
+        ]
+        : [];
+@endphp
+
+<nav
+    x-data="{ isMobileMenuOpen: false }"
+    class="sticky top-0 z-40 border-b border-ink-200 bg-white/90 backdrop-blur-md dark:border-ink-800 dark:bg-ink-900/90"
+>
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 items-center justify-between gap-4">
+
+            {{-- Marque + liens principaux --}}
+            <div class="flex min-w-0 items-center gap-2 lg:gap-5">
+                <a href="{{ auth()->check() ? route('dashboard') : url('/') }}" class="shrink-0" aria-label="Accueil DevLink Africa">
+                    <x-logo class="h-9 w-9" />
+                </a>
+
+                <div class="hidden items-center gap-0.5 lg:flex">
+                    @foreach ($navLinks as $link)
+                        <a href="{{ $link['url'] }}" class="nav-item {{ $link['active'] ? 'nav-item-active' : '' }}">
+                            <x-icon :name="$link['icon']" class="h-4 w-4" />
+                            {{ $link['label'] }}
+                        </a>
+                    @endforeach
+
                     @auth
-                        <x-nav-link :href="route('collaborations.index')" :active="request()->routeIs('collaborations.*')">
-                            Mes collaborations
-                        </x-nav-link>
-                        <x-nav-link :href="route('ai.create')" :active="request()->routeIs('ai.*')">
+                        {{-- DevLink AI : la fonctionnalité phare, visuellement détachée. --}}
+                        <a
+                            href="{{ route('ai.create') }}"
+                            class="nav-item ml-1.5 border {{ request()->routeIs('ai.*')
+                                ? 'border-brand-600 bg-brand-600 text-white hover:bg-brand-700 hover:text-white dark:border-brand-500 dark:bg-brand-500 dark:hover:bg-brand-400'
+                                : 'border-brand-200 bg-brand-50 text-brand-700 hover:bg-brand-100 hover:text-brand-800 dark:border-brand-800 dark:bg-brand-950 dark:text-brand-300 dark:hover:bg-brand-900' }}"
+                        >
+                            <x-icon name="sparkles" class="h-4 w-4" />
                             DevLink AI
-                        </x-nav-link>
+                        </a>
                     @endauth
                 </div>
             </div>
 
-            <!-- Notification bell (checks every 10 s, plays a sound) -->
-            @auth
-                <div class="flex items-center ms-auto relative"
-                     x-data="notificationBell({
-                         pollUrl: @js(route('notifications.poll')),
-                         readAllUrl: @js(route('notifications.read-all')),
-                         csrf: @js(csrf_token()),
-                         initialUnread: {{ Auth::user()->unreadNotifications()->count() }},
-                     })"
-                     @click.outside="open = false">
-                    <button type="button" @click="open = ! open" class="relative p-2 text-xl" aria-label="Notifications">
-                        🔔
-                        <span x-show="unread > 0" x-cloak x-text="unread > 99 ? '99+' : unread"
-                              class="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold rounded-full px-1.5"></span>
-                    </button>
+            {{-- Actions à droite --}}
+            <div class="flex shrink-0 items-center gap-1.5 sm:gap-2">
+                <x-theme-toggle class="hidden sm:inline-flex" />
 
-                    <div x-show="open" x-cloak class="absolute right-0 top-12 w-80 max-w-[90vw] bg-white shadow-lg rounded z-50 text-sm">
-                        <div class="flex justify-between items-center p-3 border-b">
-                            <span class="font-semibold">Notifications</span>
-                            <span class="flex gap-3">
-                                <button type="button" @click="toggleMute()" :title="muted ? 'Activer le son' : 'Couper le son'" x-text="muted ? '🔇' : '🔊'"></button>
-                                <button type="button" @click="markAllRead()" x-show="unread > 0" class="underline">Tout marquer lu</button>
-                            </span>
-                        </div>
-                        <template x-for="item in items" :key="item.id">
-                            <a :href="item.url" class="flex gap-2 p-3 border-b hover:bg-gray-50" :class="item.read ? 'text-gray-500' : 'bg-blue-50 font-medium'">
-                                <span x-text="item.icon"></span>
-                                <span class="flex-1">
-                                    <span x-text="item.message"></span>
-                                    <span class="block text-xs text-gray-500 font-normal" x-text="item.time"></span>
-                                </span>
-                            </a>
-                        </template>
-                        <p x-show="items.length === 0" class="p-3 text-gray-500">Aucune notification pour l'instant.</p>
-                        <a href="{{ route('notifications.index') }}" class="block p-3 text-center underline">Voir toutes les notifications</a>
-                    </div>
-                </div>
-            @endauth
+                @guest
+                    <a href="{{ route('login') }}" class="btn-ghost hidden sm:inline-flex">Connexion</a>
+                    <a href="{{ route('register') }}" class="btn-primary btn-sm">Créer un compte</a>
+                @endguest
 
-            <!-- Settings Dropdown -->
-            @guest
-                <div class="hidden sm:flex sm:items-center sm:ms-6 space-x-4 text-sm">
-                    <a href="{{ route('login') }}" class="text-gray-600 hover:text-gray-900">Connexion</a>
-                    <a href="{{ route('register') }}" class="text-gray-600 hover:text-gray-900">Inscription</a>
-                </div>
-            @endguest
-            @auth
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
+                @auth
+                    {{-- Les `<symbol>` des icônes de notification, déposés une fois. --}}
+                    <x-notification-icon sprite />
 
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
+                    {{--
+                        Cloche de notifications. Le composant Alpine vient du
+                        backend (resources/js/notifications.js) : on garde son
+                        nom et ses propriétés (`unread`, `items`, `open`,
+                        `muted`, `toggleMute()`, `markAllRead()`), on ne
+                        redessine que l'habillage.
+                    --}}
+                    <div
+                        class="relative"
+                        x-data="notificationBell({
+                            pollUrl: @js(route('notifications.poll')),
+                            readAllUrl: @js(route('notifications.read-all')),
+                            csrf: @js(csrf_token()),
+                            initialUnread: {{ auth()->user()->unreadNotifications()->count() }},
+                        })"
+                        @click.outside="open = false"
+                        @keydown.escape="open = false"
+                    >
+                        <button
+                            type="button"
+                            @click="open = ! open"
+                            class="btn btn-ghost btn-square relative"
+                            :aria-expanded="open"
+                            aria-label="Notifications"
+                        >
+                            <x-icon name="bell" class="h-5 w-5" />
+
+                            {{--
+                                Compteur en indigo et non en rouge : une
+                                notification est une nouveauté, pas une erreur.
+                                `min-w` plutôt qu'une largeur fixe, pour que
+                                « 9 » et « 99+ » restent tous deux centrés.
+                            --}}
+                            <span
+                                x-show="unread > 0"
+                                x-cloak
+                                x-text="unread > 99 ? '99+' : unread"
+                                class="tabular absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full border-2 border-white bg-brand-600 px-1 text-[0.625rem] font-semibold leading-none text-white dark:border-ink-900 dark:bg-brand-500"
+                            ></span>
                         </button>
-                    </x-slot>
 
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('devs.show', Auth::user())">
-                            Mon profil public
-                        </x-dropdown-link>
+                        <div
+                            x-show="open"
+                            x-cloak
+                            x-transition:enter="transition ease-out duration-150"
+                            x-transition:enter-start="opacity-0 scale-95"
+                            x-transition:enter-end="opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-100"
+                            x-transition:leave-start="opacity-100 scale-100"
+                            x-transition:leave-end="opacity-0 scale-95"
+                            class="absolute end-0 z-50 mt-2 w-[21rem] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-ink-200 bg-white shadow-overlay dark:border-ink-800 dark:bg-ink-900"
+                        >
+                            <div class="flex items-center justify-between gap-2 border-b border-ink-200 px-3 py-2.5 dark:border-ink-800">
+                                <p class="text-sm font-semibold text-ink-900 dark:text-white">Notifications</p>
 
-                        <x-dropdown-link :href="route('developer-profile.edit')">
-                            Modifier mon profil
-                        </x-dropdown-link>
+                                <div class="flex items-center gap-1">
+                                    <button
+                                        type="button"
+                                        @click="toggleMute()"
+                                        class="btn btn-ghost btn-square btn-xs"
+                                        :aria-label="muted ? 'Activer le son' : 'Couper le son'"
+                                        :title="muted ? 'Activer le son' : 'Couper le son'"
+                                    >
+                                        <span x-show="! muted"><x-icon name="volume" class="h-4 w-4" /></span>
+                                        <span x-show="muted" x-cloak><x-icon name="volume-off" class="h-4 w-4" /></span>
+                                    </button>
 
-                        <x-dropdown-link :href="route('devscore.show')">
-                            Mon DevScore
-                        </x-dropdown-link>
+                                    <button
+                                        type="button"
+                                        @click="markAllRead()"
+                                        x-show="unread > 0"
+                                        x-cloak
+                                        class="btn btn-ghost btn-xs"
+                                    >
+                                        Tout marquer lu
+                                    </button>
+                                </div>
+                            </div>
 
-                        <x-dropdown-link :href="route('favorites.index')">
-                            Mes favoris
-                        </x-dropdown-link>
+                            <div class="max-h-[22rem] overflow-y-auto">
+                                <template x-for="item in items" :key="item.id">
+                                    <a
+                                        :href="item.url"
+                                        class="flex gap-2.5 border-b border-ink-100 px-3 py-2.5 transition-colors last:border-b-0 hover:bg-ink-50 dark:border-ink-800/70 dark:hover:bg-ink-800/60"
+                                        :class="item.read || 'bg-brand-50/70 dark:bg-brand-950/40'"
+                                    >
+                                        <span
+                                            class="mt-px shrink-0"
+                                            :class="item.read ? 'text-ink-400 dark:text-ink-500' : 'text-brand-600 dark:text-brand-400'"
+                                        >
+                                            {{-- L'emoji du backend est traduit en icône via le sprite. --}}
+                                            <svg class="h-4 w-4" aria-hidden="true">
+                                                <use :href="'#notif-' + ((window.devlinkNotificationIcons || {})[item.icon] || 'bell')"></use>
+                                            </svg>
+                                        </span>
 
-                        <x-dropdown-link :href="route('profile.edit')">
-                            Compte
-                        </x-dropdown-link>
+                                        <span class="min-w-0 flex-1">
+                                            <span
+                                                class="block text-sm leading-snug"
+                                                :class="item.read ? 'text-ink-600 dark:text-ink-400' : 'font-medium text-ink-900 dark:text-white'"
+                                                x-text="item.message"
+                                            ></span>
+                                            <span class="mt-0.5 block text-xs text-ink-500" x-text="item.time"></span>
+                                        </span>
+                                    </a>
+                                </template>
 
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
+                                <div x-show="items.length === 0" class="px-3 py-8 text-center">
+                                    <x-icon name="bell" class="mx-auto h-6 w-6 text-ink-300 dark:text-ink-600" />
+                                    <p class="mt-2 text-sm text-ink-500 dark:text-ink-400">Aucune notification pour l'instant.</p>
+                                </div>
+                            </div>
 
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                {{ __('Log Out') }}
-                            </x-dropdown-link>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
-            </div>
-            @endauth
+                            <a
+                                href="{{ route('notifications.index') }}"
+                                class="block border-t border-ink-200 px-3 py-2.5 text-center text-sm font-medium text-brand-700 transition-colors hover:bg-ink-50 dark:border-ink-800 dark:text-brand-400 dark:hover:bg-ink-800/60"
+                            >
+                                Voir toutes les notifications
+                            </a>
+                        </div>
+                    </div>
 
-            <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    <a href="{{ route('projects.create') }}" class="btn-secondary btn-sm hidden xl:inline-flex">
+                        <x-icon name="plus" class="h-4 w-4" />
+                        Créer un projet
+                    </a>
+
+                    <x-dropdown align="right" width="w-60">
+                        <x-slot name="trigger">
+                            <button type="button" class="flex items-center gap-2 rounded-lg p-1 pr-2 transition hover:bg-ink-100 dark:hover:bg-ink-800">
+                                <x-avatar :user="auth()->user()" size="sm" />
+                                <span class="hidden max-w-[9rem] truncate text-sm font-medium text-ink-700 sm:block dark:text-ink-200">
+                                    {{ auth()->user()->first_name ?? auth()->user()->name }}
+                                </span>
+                                <x-icon name="chevron-down" class="h-4 w-4 text-ink-400" />
+                            </button>
+                        </x-slot>
+
+                        <x-slot name="content">
+                            {{-- Rappel de l'identité et du score en haut du menu. --}}
+                            <div class="border-b border-ink-200 px-3 py-2.5 dark:border-ink-800">
+                                <p class="truncate text-sm font-semibold text-ink-900 dark:text-white">
+                                    {{ auth()->user()->name }}
+                                </p>
+                                <p class="mt-0.5 truncate text-xs text-ink-500 dark:text-ink-400">
+                                    {{ auth()->user()->email }}
+                                </p>
+                                <x-devscore :score="auth()->user()->devscore" class="mt-2" />
+                            </div>
+
+                            @foreach ($accountLinks as $link)
+                                <a href="{{ $link['url'] }}" class="dropdown-item">
+                                    <x-icon :name="$link['icon']" class="h-4 w-4 text-ink-400" />
+                                    {{ $link['label'] }}
+                                </a>
+                            @endforeach
+
+                            <div class="my-1.5 border-t border-ink-200 dark:border-ink-800"></div>
+
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="dropdown-item text-red-600 hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-950/50 dark:hover:text-red-300">
+                                    <x-icon name="logout" class="h-4 w-4" />
+                                    Déconnexion
+                                </button>
+                            </form>
+                        </x-slot>
+                    </x-dropdown>
+                @endauth
+
+                {{-- Bouton du menu mobile --}}
+                <button
+                    type="button"
+                    @click="isMobileMenuOpen = ! isMobileMenuOpen"
+                    class="btn btn-ghost btn-square lg:hidden"
+                    :aria-expanded="isMobileMenuOpen"
+                    aria-label="Ouvrir le menu"
+                >
+                    <x-icon name="menu" class="h-5 w-5" x-show="! isMobileMenuOpen" />
+                    <x-icon name="close" class="h-5 w-5" x-show="isMobileMenuOpen" x-cloak />
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('devs.index')" :active="request()->routeIs('devs.*')">
-                Développeurs
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')">
-                Projets
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('resources.index')" :active="request()->routeIs('resources.*')">
-                Ressources
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('ranking.index')" :active="request()->routeIs('ranking.*')">
-                Classement
-            </x-responsive-nav-link>
+    {{-- Menu mobile --}}
+    <div
+        x-show="isMobileMenuOpen"
+        x-cloak
+        x-transition:enter="transition ease-out duration-150"
+        x-transition:enter-start="opacity-0 -translate-y-2"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        class="border-t border-ink-200 bg-white px-4 py-4 lg:hidden dark:border-ink-800 dark:bg-ink-900"
+    >
+        <div class="space-y-1">
+            @foreach ($navLinks as $link)
+                <a href="{{ $link['url'] }}" class="nav-item-mobile {{ $link['active'] ? 'nav-item-mobile-active' : '' }}">
+                    <x-icon :name="$link['icon']" class="h-5 w-5 text-ink-400" />
+                    {{ $link['label'] }}
+                </a>
+            @endforeach
+
             @auth
-                <x-responsive-nav-link :href="route('collaborations.index')" :active="request()->routeIs('collaborations.*')">
-                    Mes collaborations
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('ai.create')" :active="request()->routeIs('ai.*')">
+                <a href="{{ route('ai.create') }}" class="nav-item-mobile {{ request()->routeIs('ai.*') ? 'nav-item-mobile-active' : '' }}">
+                    <x-icon name="sparkles" class="h-5 w-5 text-brand-500" />
                     DevLink AI
-                </x-responsive-nav-link>
+                </a>
             @endauth
         </div>
 
-        <!-- Responsive Settings Options -->
-        @guest
-            <div class="pt-4 pb-1 border-t border-gray-200 space-y-1">
-                <x-responsive-nav-link :href="route('login')">Connexion</x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('register')">Inscription</x-responsive-nav-link>
-            </div>
-        @endguest
-        @auth
-        <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-            </div>
+        <div class="mt-4 border-t border-ink-200 pt-4 dark:border-ink-800">
+            @auth
+                <div class="flex items-center gap-3 px-3 pb-3">
+                    <x-avatar :user="auth()->user()" size="sm" />
+                    <div class="min-w-0">
+                        <p class="truncate text-sm font-semibold text-ink-900 dark:text-white">{{ auth()->user()->name }}</p>
+                        <p class="truncate text-xs text-ink-500 dark:text-ink-400">{{ auth()->user()->email }}</p>
+                    </div>
+                </div>
 
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('devs.show', Auth::user())">
-                    Mon profil public
-                </x-responsive-nav-link>
+                <div class="space-y-1">
+                    <a href="{{ route('projects.create') }}" class="nav-item-mobile">
+                        <x-icon name="plus" class="h-5 w-5 text-ink-400" />
+                        Créer un projet
+                    </a>
 
-                <x-responsive-nav-link :href="route('developer-profile.edit')">
-                    Modifier mon profil
-                </x-responsive-nav-link>
+                    <a href="{{ route('notifications.index') }}" class="nav-item-mobile">
+                        <x-icon name="bell" class="h-5 w-5 text-ink-400" />
+                        Mes notifications
+                    </a>
 
-                <x-responsive-nav-link :href="route('devscore.show')">
-                    Mon DevScore
-                </x-responsive-nav-link>
+                    @foreach ($accountLinks as $link)
+                        <a href="{{ $link['url'] }}" class="nav-item-mobile">
+                            <x-icon :name="$link['icon']" class="h-5 w-5 text-ink-400" />
+                            {{ $link['label'] }}
+                        </a>
+                    @endforeach
 
-                <x-responsive-nav-link :href="route('favorites.index')">
-                    Mes favoris
-                </x-responsive-nav-link>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="nav-item-mobile w-full text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/50">
+                            <x-icon name="logout" class="h-5 w-5" />
+                            Déconnexion
+                        </button>
+                    </form>
+                </div>
+            @else
+                <div class="flex flex-col gap-2 px-1">
+                    <a href="{{ route('login') }}" class="btn-secondary btn-block">Connexion</a>
+                    <a href="{{ route('register') }}" class="btn-primary btn-block">Créer un compte</a>
+                </div>
+            @endauth
 
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    Compte
-                </x-responsive-nav-link>
-
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
+            <div class="mt-4 flex items-center justify-between rounded-lg px-3 py-2">
+                <span class="text-sm font-medium text-ink-600 dark:text-ink-300">Thème</span>
+                <x-theme-toggle />
             </div>
         </div>
-        @endauth
     </div>
 </nav>

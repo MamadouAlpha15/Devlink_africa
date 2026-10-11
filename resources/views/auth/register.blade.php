@@ -1,52 +1,97 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+{{--
+    Inscription. Champs Breeze : name, email, password, password_confirmation.
+    Après l'inscription, l'utilisateur est redirigé vers /profile/developer.
+--}}
+<x-guest-layout title="Créer un compte">
+    <x-slot name="heading">Rejoignez DevLink Africa</x-slot>
+    <x-slot name="subheading">Créez votre compte, puis complétez votre profil développeur.</x-slot>
+
+    <form method="POST" action="{{ route('register') }}" class="space-y-5">
         @csrf
 
-        <!-- Name -->
         <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+            <label for="name" class="label">Nom complet</label>
+            <input
+                id="name"
+                type="text"
+                name="name"
+                value="{{ old('name') }}"
+                required
+                autofocus
+                autocomplete="name"
+                class="input"
+                placeholder="Alpha Keita"
+            >
+            <x-input-error :messages="$errors->get('name')" />
         </div>
 
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        <div>
+            <label for="email" class="label">Adresse e-mail</label>
+            <input
+                id="email"
+                type="email"
+                name="email"
+                value="{{ old('email') }}"
+                required
+                autocomplete="username"
+                class="input"
+                placeholder="vous@exemple.com"
+            >
+            <x-input-error :messages="$errors->get('email')" />
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+        <div x-data="{ isVisible: false }">
+            <label for="password" class="label">Mot de passe</label>
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
+            <div class="relative">
+                <input
+                    id="password"
+                    :type="isVisible ? 'text' : 'password'"
+                    type="password"
+                    name="password"
+                    required
+                    autocomplete="new-password"
+                    class="input pr-11"
+                    placeholder="••••••••"
+                >
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                <button
+                    type="button"
+                    @click="isVisible = ! isVisible"
+                    class="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-ink-400 transition hover:text-ink-700 dark:hover:text-ink-200"
+                    :aria-label="isVisible ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+                >
+                    <x-icon name="eye" class="h-4 w-4" x-show="! isVisible" />
+                    <x-icon name="eye-off" class="h-4 w-4" x-show="isVisible" x-cloak />
+                </button>
+            </div>
+
+            <p class="field-hint">8 caractères minimum.</p>
+            <x-input-error :messages="$errors->get('password')" />
         </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+        <div>
+            <label for="password_confirmation" class="label">Confirmer le mot de passe</label>
+            <input
+                id="password_confirmation"
+                type="password"
+                name="password_confirmation"
+                required
+                autocomplete="new-password"
+                class="input"
+                placeholder="••••••••"
+            >
+            <x-input-error :messages="$errors->get('password_confirmation')" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
+        <button type="submit" class="btn-primary btn-block">
+            Créer mon compte
+            <x-icon name="arrow-right" class="h-4 w-4" />
+        </button>
     </form>
+
+    <p class="mt-8 text-center text-sm text-ink-600 dark:text-ink-400">
+        Vous avez déjà un compte&nbsp;?
+        <a href="{{ route('login') }}" class="link">Se connecter</a>
+    </p>
 </x-guest-layout>
