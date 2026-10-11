@@ -14,9 +14,13 @@ use App\Models\Project;
 use App\Models\ProjectMember;
 use App\Models\ProjectRole;
 use App\Models\User;
+use App\Notifications\CollaborationAccepted;
+use App\Notifications\CollaborationRequested;
+use App\Notifications\ProjectJoined;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
@@ -99,13 +103,17 @@ class ProjectCollaboration
     {
         $this->ensureCanJoin($project, $user, $role, 'Vous avez déjà une demande en attente pour ce projet.');
 
-        return $project->collaborationRequests()->create([
+        $request = $project->collaborationRequests()->create([
             'user_id' => $user->id,
             'direction' => RequestDirection::Application,
             'project_role_id' => $role?->id,
             'message' => $message,
             'status' => RequestStatus::Pending,
         ]);
+
+        Notification::send($project->managers(), new CollaborationRequested($request));
+
+        return $request;
     }
 
     /**
@@ -119,13 +127,17 @@ class ProjectCollaboration
 
         $this->ensureCanJoin($project, $invitee, $role, 'Une demande est déjà en attente entre ce développeur et ce projet.');
 
-        return $project->collaborationRequests()->create([
+        $request = $project->collaborationRequests()->create([
             'user_id' => $invitee->id,
             'direction' => RequestDirection::Invitation,
             'project_role_id' => $role?->id,
             'message' => $message,
             'status' => RequestStatus::Pending,
         ]);
+
+        $invitee->notify(new CollaborationRequested($request));
+
+        return $request;
     }
 
     public function accept(CollaborationRequest $request): ProjectMember
@@ -158,6 +170,11 @@ class ProjectCollaboration
             // A newcomer from another country can unlock "Panafricain" for the rest of the team.
             $project->members()->where('users.id', '!=', $user->id)->get()
                 ->each(fn (User $teammate) => $this->badges->evaluate($teammate));
+
+            // The team accepted an application → tell the developer; the developer accepted an invitation → tell the team.
+            $request->direction === RequestDirection::Application
+                ? $user->notify(new CollaborationAccepted($request))
+                : Notification::send($project->managers(), new ProjectJoined($project, $user));
 
             return $membership;
         });

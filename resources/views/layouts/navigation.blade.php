@@ -38,6 +38,45 @@
                 </div>
             </div>
 
+            <!-- Notification bell (checks every 10 s, plays a sound) -->
+            @auth
+                <div class="flex items-center ms-auto relative"
+                     x-data="notificationBell({
+                         pollUrl: @js(route('notifications.poll')),
+                         readAllUrl: @js(route('notifications.read-all')),
+                         csrf: @js(csrf_token()),
+                         initialUnread: {{ Auth::user()->unreadNotifications()->count() }},
+                     })"
+                     @click.outside="open = false">
+                    <button type="button" @click="open = ! open" class="relative p-2 text-xl" aria-label="Notifications">
+                        🔔
+                        <span x-show="unread > 0" x-cloak x-text="unread > 99 ? '99+' : unread"
+                              class="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold rounded-full px-1.5"></span>
+                    </button>
+
+                    <div x-show="open" x-cloak class="absolute right-0 top-12 w-80 max-w-[90vw] bg-white shadow-lg rounded z-50 text-sm">
+                        <div class="flex justify-between items-center p-3 border-b">
+                            <span class="font-semibold">Notifications</span>
+                            <span class="flex gap-3">
+                                <button type="button" @click="toggleMute()" :title="muted ? 'Activer le son' : 'Couper le son'" x-text="muted ? '🔇' : '🔊'"></button>
+                                <button type="button" @click="markAllRead()" x-show="unread > 0" class="underline">Tout marquer lu</button>
+                            </span>
+                        </div>
+                        <template x-for="item in items" :key="item.id">
+                            <a :href="item.url" class="flex gap-2 p-3 border-b hover:bg-gray-50" :class="item.read ? 'text-gray-500' : 'bg-blue-50 font-medium'">
+                                <span x-text="item.icon"></span>
+                                <span class="flex-1">
+                                    <span x-text="item.message"></span>
+                                    <span class="block text-xs text-gray-500 font-normal" x-text="item.time"></span>
+                                </span>
+                            </a>
+                        </template>
+                        <p x-show="items.length === 0" class="p-3 text-gray-500">Aucune notification pour l'instant.</p>
+                        <a href="{{ route('notifications.index') }}" class="block p-3 text-center underline">Voir toutes les notifications</a>
+                    </div>
+                </div>
+            @endauth
+
             <!-- Settings Dropdown -->
             @guest
                 <div class="hidden sm:flex sm:items-center sm:ms-6 space-x-4 text-sm">

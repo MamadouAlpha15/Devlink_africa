@@ -11,9 +11,12 @@ use App\Models\Resource;
 use App\Models\ResourceReview;
 use App\Models\Tag;
 use App\Models\User;
+use App\Notifications\NewComment;
+use App\Notifications\ResourcePublished;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -44,6 +47,8 @@ class ResourceLibrary
 
             $this->devScore->award($author, PointAction::ResourcePublished, $resource);
             Activity::log($author, ActivityType::ResourcePublished, $resource);
+
+            Notification::send($author->followers()->get(), new ResourcePublished($resource));
 
             return $resource;
         });
@@ -123,7 +128,13 @@ class ResourceLibrary
 
     public function comment(User $user, Resource $resource, string $body): Comment
     {
-        return $resource->comments()->create(['user_id' => $user->id, 'body' => $body]);
+        $comment = $resource->comments()->create(['user_id' => $user->id, 'body' => $body]);
+
+        if (! $resource->user->is($user)) {
+            $resource->user->notify(new NewComment($comment));
+        }
+
+        return $comment;
     }
 
     /**

@@ -47,7 +47,7 @@ class DashboardTest extends TestCase
 
     public function test_recommendations_target_the_open_roles_of_my_projects(): void
     {
-        $flutter = Skill::factory()->create(['name' => 'Flutter', 'slug' => 'flutter']);
+        $flutter = Skill::factory()->create(['name' => 'Flutter', 'slug' => 'flutter', 'category' => 'mobile']);
         $owner = $this->developer('Alpha');
         app(ProjectCollaboration::class)->createProject($owner, [
             'title' => 'AfricaDelivery', 'description' => 'Livraison.', 'category' => 'logistics', 'status' => 'recruiting', 'members_wanted' => 2,
@@ -56,7 +56,7 @@ class DashboardTest extends TestCase
 
         $this->developer('Ibrahim Flutter', [], [$flutter]);
         $this->developer('Private Flutter', ['is_public' => false], [$flutter]);
-        $this->developer('Laravel Only', [], [Skill::factory()->create()]);
+        $this->developer('Laravel Only', [], [Skill::factory()->create(['category' => 'backend'])]);
 
         $recommended = $this->actingAs($owner)->get('/dashboard')->viewData('recommendedDevelopers');
 

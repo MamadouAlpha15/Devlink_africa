@@ -9,6 +9,7 @@ use App\Enums\SkillLevel;
 use App\Models\Activity;
 use App\Models\Badge;
 use App\Models\User;
+use App\Notifications\BadgeEarned;
 use Illuminate\Support\Collection;
 
 /**
@@ -40,6 +41,7 @@ class BadgeAwarder
         foreach ($earned as $badge) {
             $user->badges()->attach($badge->id, ['awarded_at' => now()]);
             Activity::log($user, ActivityType::BadgeEarned, $badge);
+            $user->notify(new BadgeEarned($badge));
         }
 
         return $earned->values();

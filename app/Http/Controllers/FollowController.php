@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Notifications\NewFollower;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -13,7 +14,12 @@ class FollowController extends Controller
     {
         Gate::authorize('follow', $user);
 
-        $request->user()->following()->syncWithoutDetaching([$user->id]);
+        $changes = $request->user()->following()->syncWithoutDetaching([$user->id]);
+
+        // Only a new follow notifies (clicking "Suivre" twice does not).
+        if ($changes['attached'] !== []) {
+            $user->notify(new NewFollower($request->user()));
+        }
 
         return back()->with('status', 'Vous suivez maintenant '.$user->name.'.');
     }

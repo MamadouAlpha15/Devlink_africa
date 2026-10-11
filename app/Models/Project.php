@@ -8,6 +8,7 @@ use App\Enums\ProjectStatus;
 use Database\Factories\ProjectFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -133,6 +134,18 @@ class Project extends Model
             ->where('user_id', $user->id)
             ->whereIn('role', [ProjectMemberRole::Owner, ProjectMemberRole::CoOwner])
             ->exists();
+    }
+
+    /**
+     * Owner and co-owners, who receive the team's notifications.
+     *
+     * @return Collection<int, User>
+     */
+    public function managers(): Collection
+    {
+        return $this->members()
+            ->wherePivotIn('role', [ProjectMemberRole::Owner->value, ProjectMemberRole::CoOwner->value])
+            ->get();
     }
 
     /**

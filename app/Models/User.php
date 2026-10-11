@@ -38,6 +38,24 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasFactory, Notifiable;
 
     /**
+     * Same defaults as the database, so a user created in this request already has them
+     * (otherwise `notify_on_platform` or `is_public` would read as null until reloaded).
+     *
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'profile_type' => 'developer',
+        'availability' => 'available',
+        'devscore' => 0,
+        'is_public' => true,
+        'show_email' => false,
+        'show_availability' => true,
+        'notify_by_email' => true,
+        'notify_on_platform' => true,
+        'is_admin' => false,
+    ];
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
