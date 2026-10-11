@@ -55,4 +55,43 @@ class EmailVerificationTest extends TestCase
 
         $this->assertFalse($user->fresh()->hasVerifiedEmail());
     }
+
+    public function test_the_link_works_without_being_logged_in(): void
+    {
+        // E.g. registered on a computer, email opened on a phone.
+        $user = User::factory()->unverified()->create();
+
+        $verificationUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            ['id' => $user->id, 'hash' => sha1($user->email)]
+        );
+
+        $this->get($verificationUrl)
+            ->assertRedirect(route('login'))
+            ->assertSessionHas('status', 'Votre adresse email est vérifiée ! Vous pouvez maintenant vous connecter.');
+
+        $this->assertTrue($user->fresh()->hasVerifiedEmail());
+        $this->assertGuest();
+
+        $this->get(route('login'))->assertSee('Votre adresse email est vérifiée');
+    }
+
+    public function test_a_guest_cannot_verify_with_a_forged_or_expired_link(): void
+    {
+        $user = User::factory()->unverified()->create();
+
+        // Unsigned link: rejected.
+        $this->get("/verify-email/{$user->id}/".sha1($user->email))->assertForbidden();
+
+        // Signed but for another address: rejected.
+        $this->get(URL::temporarySignedRoute('verification.verify', now()->addHour(), ['id' => $user->id, 'hash' => sha1('other@example.com')]))
+            ->assertForbidden();
+
+        // Expired: rejected.
+        $this->get(URL::temporarySignedRoute('verification.verify', now()->subMinute(), ['id' => $user->id, 'hash' => sha1($user->email)]))
+            ->assertForbidden();
+
+        $this->assertFalse($user->fresh()->hasVerifiedEmail());
+    }
 }
