@@ -25,7 +25,10 @@ use Illuminate\Validation\ValidationException;
  */
 class ProjectCollaboration
 {
-    public function __construct(private DevScore $devScore) {}
+    public function __construct(
+        private DevScore $devScore,
+        private BadgeAwarder $badges,
+    ) {}
 
     /**
      * @param  array<string, mixed>  $data  Project fields + 'skills' (ids) + 'roles' (title, skill_id, slots)
@@ -151,6 +154,10 @@ class ProjectCollaboration
 
             $this->devScore->award($user, PointAction::Collaboration, $project);
             Activity::log($user, ActivityType::ProjectJoined, $project);
+
+            // A newcomer from another country can unlock "Panafricain" for the rest of the team.
+            $project->members()->where('users.id', '!=', $user->id)->get()
+                ->each(fn (User $teammate) => $this->badges->evaluate($teammate));
 
             return $membership;
         });

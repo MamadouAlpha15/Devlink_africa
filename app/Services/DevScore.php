@@ -10,12 +10,15 @@ use Illuminate\Support\Facades\DB;
 
 class DevScore
 {
+    public function __construct(private BadgeAwarder $badges) {}
+
     /**
-     * Give a user the points for an action and keep the cached total in sync.
+     * Give a user the points for an action, keep the cached total in sync,
+     * then check whether the action unlocked a badge.
      */
     public function award(User $user, PointAction $action, ?Model $subject = null): PointTransaction
     {
-        return DB::transaction(function () use ($user, $action, $subject) {
+        $transaction = DB::transaction(function () use ($user, $action, $subject) {
             $transaction = $user->pointTransactions()->create([
                 'action' => $action,
                 'points' => $action->points(),
@@ -27,5 +30,9 @@ class DevScore
 
             return $transaction;
         });
+
+        $this->badges->evaluate($user);
+
+        return $transaction;
     }
 }

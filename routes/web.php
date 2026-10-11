@@ -4,11 +4,13 @@ use App\Http\Controllers\AiSearchController;
 use App\Http\Controllers\CollaborationRequestController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\DeveloperProfileController;
+use App\Http\Controllers\DevScoreController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectMemberController;
 use App\Http\Controllers\ProjectRoleController;
+use App\Http\Controllers\RankingController;
 use App\Http\Controllers\UserSkillController;
 use Illuminate\Support\Facades\Route;
 
@@ -71,11 +73,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/ai', [AiSearchController::class, 'store'])->middleware('throttle:10,1')->name('ai.store');
     Route::get('/ai/{aiSearch}', [AiSearchController::class, 'show'])->name('ai.show');
 
+    // My DevScore
+    Route::get('/devscore', [DevScoreController::class, 'show'])->name('devscore.show');
+
     // Team members
     Route::patch('/projects/{project}/members/{member}', [ProjectMemberController::class, 'update'])->name('projects.members.update');
     Route::delete('/projects/{project}/members/{member}', [ProjectMemberController::class, 'destroy'])->name('projects.members.destroy');
     Route::post('/projects/{project}/leave', [ProjectMemberController::class, 'leave'])->name('projects.leave');
 });
+
+// African ranking (public)
+Route::get('/ranking', [RankingController::class, 'index'])->name('ranking.index');
 
 // Public project pages
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');

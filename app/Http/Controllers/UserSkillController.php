@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Enums\SkillLevel;
 use App\Http\Requests\StoreUserSkillRequest;
+use App\Models\Badge;
 use App\Models\Skill;
+use App\Services\BadgeAwarder;
 use App\Services\ProfileCompletion;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
 
 /**
@@ -18,7 +21,7 @@ class UserSkillController extends Controller
     /**
      * Add a skill, or update its level if the user already has it.
      */
-    public function store(StoreUserSkillRequest $request, ProfileCompletion $completion): RedirectResponse
+    public function store(StoreUserSkillRequest $request, ProfileCompletion $completion, BadgeAwarder $badges): RedirectResponse
     {
         $user = $request->user();
 
@@ -27,19 +30,31 @@ class UserSkillController extends Controller
         ]);
 
         $completion->sync($user);
+        $earned = $badges->evaluate($user); // "Expert Laravel"
 
-        return back()->with('status', 'Compétence ajoutée.');
+        return back()->with('status', $this->message('Compétence ajoutée.', $earned));
     }
 
-    public function update(Request $request, Skill $skill): RedirectResponse
+    public function update(Request $request, Skill $skill, BadgeAwarder $badges): RedirectResponse
     {
         $validated = $request->validate([
             'level' => ['required', Rule::enum(SkillLevel::class)],
         ]);
 
         $request->user()->skills()->updateExistingPivot($skill->id, ['level' => $validated['level']]);
+        $earned = $badges->evaluate($request->user());
 
-        return back()->with('status', 'Niveau mis à jour.');
+        return back()->with('status', $this->message('Niveau mis à jour.', $earned));
+    }
+
+    /**
+     * @param  Collection<int, Badge>  $earned
+     */
+    private function message(string $message, Collection $earned): string
+    {
+        return $earned->isEmpty()
+            ? $message
+            : $message.' Nouveau badge : '.$earned->map(fn (Badge $badge) => $badge->icon.' '.$badge->name)->join(', ').' !';
     }
 
     public function destroy(Request $request, Skill $skill): RedirectResponse
