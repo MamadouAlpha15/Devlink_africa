@@ -5,6 +5,7 @@ use App\Http\Controllers\CollaborationRequestController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\DeveloperProfileController;
 use App\Http\Controllers\DevScoreController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
@@ -89,6 +90,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/resources/{resource}/reviews', [ResourceInteractionController::class, 'deleteReview'])->name('resources.reviews.destroy');
     Route::post('/resources/{resource}/comments', [ResourceInteractionController::class, 'comment'])->name('resources.comments.store');
     Route::delete('/comments/{comment}', [ResourceInteractionController::class, 'deleteComment'])->name('comments.destroy');
+
+    // Favorites: developers, resources and projects
+    Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
+    Route::post('/favorites/{type}/{id}', [FavoriteController::class, 'store'])
+        ->whereIn('type', array_keys(FavoriteController::TYPES))->whereNumber('id')->name('favorites.store');
+    Route::delete('/favorites/{type}/{id}', [FavoriteController::class, 'destroy'])
+        ->whereIn('type', array_keys(FavoriteController::TYPES))->whereNumber('id')->name('favorites.destroy');
 
     // My DevScore
     Route::get('/devscore', [DevScoreController::class, 'show'])->name('devscore.show');

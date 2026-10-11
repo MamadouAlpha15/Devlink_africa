@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -210,6 +211,17 @@ class User extends Authenticatable implements MustVerifyEmail
     public function favorites(): HasMany
     {
         return $this->hasMany(Favorite::class);
+    }
+
+    /**
+     * Whether this user saved the developer, resource or project in "Mes favoris".
+     */
+    public function hasFavorited(Model $model): bool
+    {
+        return $this->favorites()
+            ->where('favoritable_type', $model->getMorphClass())
+            ->where('favoritable_id', $model->getKey())
+            ->exists();
     }
 
     /** Favorites pointing at this user (other users who saved this profile). */

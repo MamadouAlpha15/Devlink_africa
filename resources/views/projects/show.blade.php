@@ -31,6 +31,7 @@
                 @if ($canUpdate)
                     <a href="{{ route('projects.edit', $project) }}" class="underline">Modifier le projet</a>
                 @endif
+                @include('partials.favorite-button', ['type' => 'project', 'model' => $project])
 
                 @if ($viewerMembership && $viewerMembership->role !== \App\Enums\ProjectMemberRole::Owner)
                     <form method="POST" action="{{ route('projects.leave', $project) }}" onsubmit="return confirm('Quitter ce projet ?')">
