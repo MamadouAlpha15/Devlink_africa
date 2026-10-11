@@ -8,6 +8,7 @@ use App\Http\Controllers\DeveloperProfileController;
 use App\Http\Controllers\DevScoreController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\FollowController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectMemberController;
@@ -29,6 +30,12 @@ Route::get('/devs', [DeveloperController::class, 'index'])->name('devs.index');
 Route::get('/devs/{user}', [DeveloperController::class, 'show'])->name('devs.show');
 
 Route::middleware('auth')->group(function () {
+    // Notifications (the bell polls every 10 seconds)
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/poll', [NotificationController::class, 'poll'])->middleware('throttle:30,1')->name('notifications.poll');
+    Route::post('/notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.read-all');
+    Route::get('/notifications/{id}', [NotificationController::class, 'open'])->name('notifications.open');
+
     // Account settings (Breeze): name, email, password, deletion
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
