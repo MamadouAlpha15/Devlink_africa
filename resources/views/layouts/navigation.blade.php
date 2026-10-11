@@ -73,6 +73,10 @@
                             Mon DevScore
                         </x-dropdown-link>
 
+                        <x-dropdown-link :href="route('favorites.index')">
+                            Mes favoris
+                        </x-dropdown-link>
+
                         <x-dropdown-link :href="route('profile.edit')">
                             Compte
                         </x-dropdown-link>
@@ -157,6 +161,10 @@
 
                 <x-responsive-nav-link :href="route('devscore.show')">
                     Mon DevScore
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('favorites.index')">
+                    Mes favoris
                 </x-responsive-nav-link>
 
                 <x-responsive-nav-link :href="route('profile.edit')">

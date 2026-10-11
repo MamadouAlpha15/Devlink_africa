@@ -57,6 +57,7 @@
                         </form>
                     @endif
                 @endif
+                @include('partials.favorite-button', ['type' => 'developer', 'model' => $user])
                 {{-- À venir : Contacter (messagerie), Signaler --}}
 
                 @if ($user->github_url) <a href="{{ $user->github_url }}" target="_blank" rel="noopener" class="underline">GitHub</a> @endif

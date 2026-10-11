@@ -53,7 +53,8 @@
                 @if ($canUpdate)
                     <a href="{{ route('resources.edit', $resource) }}" class="underline">Modifier</a>
                 @endif
-                {{-- À venir : Favori, Signaler --}}
+                @include('partials.favorite-button', ['type' => 'resource', 'model' => $resource])
+                {{-- À venir : Signaler --}}
             </div>
 
             <div class="p-6 bg-white shadow rounded">
