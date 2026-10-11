@@ -16,7 +16,6 @@ use App\Enums\RequestStatus;
 use App\Enums\ResourceType;
 use App\Enums\SkillLevel;
 use App\Models\Activity;
-use App\Models\Badge;
 use App\Models\Conversation;
 use App\Models\Country;
 use App\Models\PointTransaction;
@@ -27,6 +26,7 @@ use App\Models\Resource;
 use App\Models\Skill;
 use App\Models\Tag;
 use App\Models\User;
+use App\Services\BadgeAwarder;
 use App\Services\DevScore;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
@@ -472,30 +472,15 @@ class DemoSeeder extends Seeder
         }
     }
 
+    /**
+     * Most badges are already awarded along the way (DevScore::award checks them).
+     * A final pass catches the ones that depend on the whole team, like "Panafricain".
+     */
     private function awardBadges(): void
     {
-        $badges = Badge::all()->keyBy('criteria');
+        $awarder = app(BadgeAwarder::class);
 
-        foreach (User::query()->where('is_admin', false)->with(['skills', 'projects.members'])->withCount('resources')->get() as $user) {
-            $owned = $user->projects->filter(fn (Project $project) => $project->pivot->role === ProjectMemberRole::Owner);
-            $joined = $user->projects->filter(fn (Project $project) => $project->pivot->role !== ProjectMemberRole::Owner);
-            $countries = $user->projects->flatMap->members->pluck('country_id')->push($user->country_id)->filter()->unique();
-
-            $earned = array_filter([
-                'first_project' => $owned->isNotEmpty(),
-                'collaborator' => $joined->isNotEmpty(),
-                'active_contributor' => $user->resources_count >= 2,
-                'laravel_expert' => $user->skills->contains(fn (Skill $skill) => $skill->slug === 'laravel' && $skill->pivot->level === SkillLevel::Expert),
-                'panafrican' => $countries->count() >= 3,
-                'builder' => $owned->contains(fn (Project $project) => $project->status === ProjectStatus::Completed),
-            ]);
-
-            foreach (array_keys($earned) as $criteria) {
-                $badge = $badges[$criteria];
-                $user->badges()->attach($badge->id, ['awarded_at' => now()]);
-                $this->logActivity($user, ActivityType::BadgeEarned, $badge);
-            }
-        }
+        User::query()->where('is_admin', false)->each(fn (User $user) => $awarder->evaluate($user));
     }
 
     private function createConversations(): void

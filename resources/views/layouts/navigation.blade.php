@@ -21,6 +21,9 @@
                     <x-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')">
                         Projets
                     </x-nav-link>
+                    <x-nav-link :href="route('ranking.index')" :active="request()->routeIs('ranking.*')">
+                        Classement
+                    </x-nav-link>
                     @auth
                         <x-nav-link :href="route('collaborations.index')" :active="request()->routeIs('collaborations.*')">
                             Mes collaborations
@@ -61,6 +64,10 @@
 
                         <x-dropdown-link :href="route('developer-profile.edit')">
                             Modifier mon profil
+                        </x-dropdown-link>
+
+                        <x-dropdown-link :href="route('devscore.show')">
+                            Mon DevScore
                         </x-dropdown-link>
 
                         <x-dropdown-link :href="route('profile.edit')">
@@ -106,6 +113,9 @@
             <x-responsive-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')">
                 Projets
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('ranking.index')" :active="request()->routeIs('ranking.*')">
+                Classement
+            </x-responsive-nav-link>
             @auth
                 <x-responsive-nav-link :href="route('collaborations.index')" :active="request()->routeIs('collaborations.*')">
                     Mes collaborations
@@ -137,6 +147,10 @@
 
                 <x-responsive-nav-link :href="route('developer-profile.edit')">
                     Modifier mon profil
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('devscore.show')">
+                    Mon DevScore
                 </x-responsive-nav-link>
 
                 <x-responsive-nav-link :href="route('profile.edit')">
