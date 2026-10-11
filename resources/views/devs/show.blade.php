@@ -132,7 +132,7 @@
                     <ul class="space-y-2">
                         @forelse ($projects as $project)
                             <li>
-                                <span class="font-medium">{{ $project->title }}</span>
+                                <a href="{{ route('projects.show', $project) }}" class="font-medium underline">{{ $project->title }}</a>
                                 <span class="text-sm text-gray-600">· {{ $project->pivot->role->label() }} · {{ $project->status->label() }}</span>
                             </li>
                         @empty
@@ -146,7 +146,7 @@
                     <ul class="space-y-2">
                         @forelse ($resources as $resource)
                             <li>
-                                <span class="font-medium">{{ $resource->title }}</span>
+                                <a href="{{ route('resources.show', $resource) }}" class="font-medium underline">{{ $resource->title }}</a>
                                 <span class="text-sm text-gray-600">· {{ $resource->type->label() }}
                                     @if ($resource->rating_avg) · ★ {{ number_format($resource->rating_avg, 1, ',', ' ') }} @endif
                                 </span>

@@ -11,6 +11,8 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectMemberController;
 use App\Http\Controllers\ProjectRoleController;
 use App\Http\Controllers\RankingController;
+use App\Http\Controllers\ResourceController;
+use App\Http\Controllers\ResourceInteractionController;
 use App\Http\Controllers\UserSkillController;
 use Illuminate\Support\Facades\Route;
 
@@ -73,6 +75,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/ai', [AiSearchController::class, 'store'])->middleware('throttle:10,1')->name('ai.store');
     Route::get('/ai/{aiSearch}', [AiSearchController::class, 'show'])->name('ai.show');
 
+    // Dev Resources (registered before /resources/{resource} so "create" is not read as a slug)
+    Route::get('/resources/create', [ResourceController::class, 'create'])->name('resources.create');
+    Route::post('/resources', [ResourceController::class, 'store'])->name('resources.store');
+    Route::get('/resources/{resource}/edit', [ResourceController::class, 'edit'])->name('resources.edit');
+    Route::put('/resources/{resource}', [ResourceController::class, 'update'])->name('resources.update');
+    Route::delete('/resources/{resource}', [ResourceController::class, 'destroy'])->name('resources.destroy');
+
+    // Likes, ratings and comments
+    Route::post('/resources/{resource}/like', [ResourceInteractionController::class, 'like'])->name('resources.like');
+    Route::delete('/resources/{resource}/like', [ResourceInteractionController::class, 'unlike'])->name('resources.unlike');
+    Route::post('/resources/{resource}/reviews', [ResourceInteractionController::class, 'review'])->name('resources.reviews.store');
+    Route::delete('/resources/{resource}/reviews', [ResourceInteractionController::class, 'deleteReview'])->name('resources.reviews.destroy');
+    Route::post('/resources/{resource}/comments', [ResourceInteractionController::class, 'comment'])->name('resources.comments.store');
+    Route::delete('/comments/{comment}', [ResourceInteractionController::class, 'deleteComment'])->name('comments.destroy');
+
     // My DevScore
     Route::get('/devscore', [DevScoreController::class, 'show'])->name('devscore.show');
 
@@ -84,6 +101,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // African ranking (public)
 Route::get('/ranking', [RankingController::class, 'index'])->name('ranking.index');
+
+// Public resource pages
+Route::get('/resources', [ResourceController::class, 'index'])->name('resources.index');
+Route::get('/resources/{resource}', [ResourceController::class, 'show'])->name('resources.show');
+Route::get('/resources/{resource}/download', [ResourceController::class, 'download'])->name('resources.download');
 
 // Public project pages
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');

@@ -18,21 +18,38 @@ class DevScore
      */
     public function award(User $user, PointAction $action, ?Model $subject = null): PointTransaction
     {
-        $transaction = DB::transaction(function () use ($user, $action, $subject) {
-            $transaction = $user->pointTransactions()->create([
-                'action' => $action,
-                'points' => $action->points(),
-                'subject_type' => $subject?->getMorphClass(),
-                'subject_id' => $subject?->getKey(),
-            ]);
-
-            $user->increment('devscore', $transaction->points);
-
-            return $transaction;
-        });
+        $transaction = $this->record($user, $action, $action->points(), $subject);
 
         $this->badges->evaluate($user);
 
         return $transaction;
+    }
+
+    /**
+     * Take back the points of an action that was undone (a like removed),
+     * so points cannot be farmed by repeating the action.
+     */
+    public function revoke(User $user, PointAction $action, ?Model $subject = null): PointTransaction
+    {
+        return $this->record($user, $action, -$action->points(), $subject);
+    }
+
+    private function record(User $user, PointAction $action, int $points, ?Model $subject): PointTransaction
+    {
+        return DB::transaction(function () use ($user, $action, $points, $subject) {
+            $transaction = $user->pointTransactions()->create([
+                'action' => $action,
+                'points' => $points,
+                'subject_type' => $subject?->getMorphClass(),
+                'subject_id' => $subject?->getKey(),
+            ]);
+
+            // The cached total never goes below zero (unsigned column).
+            $points >= 0
+                ? $user->increment('devscore', $points)
+                : $user->decrement('devscore', min(-$points, $user->devscore));
+
+            return $transaction;
+        });
     }
 }
