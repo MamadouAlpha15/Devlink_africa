@@ -4,8 +4,10 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
@@ -93,5 +95,33 @@ class EmailVerificationTest extends TestCase
             ->assertForbidden();
 
         $this->assertFalse($user->fresh()->hasVerifiedEmail());
+    }
+
+    public function test_unverified_members_see_a_reminder_banner_and_can_resend_the_link(): void
+    {
+        Notification::fake();
+        $user = User::factory()->unverified()->create();
+
+        $this->actingAs($user)->get('/profile/developer')
+            ->assertOk()
+            ->assertSee('Vérifiez votre e-mail pour apparaître sur DevLink Africa.');
+
+        $this->actingAs($user)
+            ->from('/profile/developer')
+            ->post(route('verification.send'))
+            ->assertRedirect('/profile/developer');
+
+        Notification::assertSentTo($user, VerifyEmail::class);
+
+        $this->actingAs($user)->get('/profile/developer')
+            ->assertSee("Un nouveau lien de vérification vient d'être envoyé", false)
+            ->assertDontSee('verification-link-sent');
+    }
+
+    public function test_verified_members_do_not_see_the_reminder_banner(): void
+    {
+        $this->actingAs(User::factory()->create())->get('/profile/developer')
+            ->assertOk()
+            ->assertDontSee('Vérifiez votre e-mail pour apparaître sur DevLink Africa.');
     }
 }

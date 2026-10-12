@@ -16,6 +16,8 @@
     <body class="flex min-h-full flex-col font-sans antialiased">
         @include('layouts.navigation')
 
+        <x-verify-email-banner />
+
         {{-- En-tête facultatif, sur une bande distincte du contenu. --}}
         @isset($header)
             <header class="border-b border-ink-200 bg-white dark:border-ink-800 dark:bg-ink-900">

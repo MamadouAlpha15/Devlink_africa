@@ -145,11 +145,13 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Developers shown in listings (search, rankings, country counts):
-     * public, not suspended, with a completed profile.
+     * public, not suspended, with a verified email and a completed profile.
      */
     public function scopeListed(Builder $query): void
     {
-        $query->public()->active()->whereNotNull('profile_completed_at');
+        $query->public()->active()
+            ->whereNotNull('email_verified_at')
+            ->whereNotNull('profile_completed_at');
     }
 
     public function country(): BelongsTo
