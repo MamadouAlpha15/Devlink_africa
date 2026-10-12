@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\DeveloperProfileController;
 use App\Http\Controllers\DevScoreController;
+use App\Http\Controllers\EcosystemController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\MessageController;
@@ -152,6 +153,9 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
 
 // African ranking (public)
 Route::get('/ranking', [RankingController::class, 'index'])->name('ranking.index');
+
+// Bonus: "L'écosystème DevLink Africa", statistics per country (public)
+Route::get('/ecosysteme', EcosystemController::class)->name('ecosystem');
 
 // Public resource pages
 Route::get('/resources', [ResourceController::class, 'index'])->name('resources.index');
