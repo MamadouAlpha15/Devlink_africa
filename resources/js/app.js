@@ -1,5 +1,7 @@
+import './echo';
 import Alpine from 'alpinejs';
 import notificationBell from './notifications';
+import { chatThread, conversationList, messagesBadge } from './messages';
 
 /*
 |--------------------------------------------------------------------------
@@ -374,6 +376,9 @@ Alpine.data('copyToClipboard', (textToCopy = '') => ({
 window.Alpine = Alpine;
 
 Alpine.data('notificationBell', notificationBell);
+Alpine.data('chatThread', chatThread);
+Alpine.data('conversationList', conversationList);
+Alpine.data('messagesBadge', messagesBadge);
 
 Alpine.start();
 

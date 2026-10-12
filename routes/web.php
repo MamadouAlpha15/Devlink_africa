@@ -9,6 +9,7 @@ use App\Http\Controllers\DeveloperProfileController;
 use App\Http\Controllers\DevScoreController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\FollowController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
@@ -113,6 +114,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // My DevScore
     Route::get('/devscore', [DevScoreController::class, 'show'])->name('devscore.show');
+
+    // Private messages, delivered in real time (Reverb) with a polling fallback
+    Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
+    Route::post('/devs/{user}/message', [MessageController::class, 'start'])->name('messages.start');
+    Route::get('/messages/{conversation}', [MessageController::class, 'show'])->name('messages.show');
+    Route::post('/messages/{conversation}', [MessageController::class, 'store'])->middleware('throttle:30,1')->name('messages.store');
+    Route::post('/messages/{conversation}/read', [MessageController::class, 'read'])->name('messages.read');
+    Route::get('/messages/{conversation}/poll', [MessageController::class, 'poll'])->middleware('throttle:60,1')->name('messages.poll');
 
     // Team members
     Route::patch('/projects/{project}/members/{member}', [ProjectMemberController::class, 'update'])->name('projects.members.update');

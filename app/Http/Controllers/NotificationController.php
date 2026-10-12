@@ -41,6 +41,8 @@ class NotificationController extends Controller
 
         return response()->json([
             'unread' => $user->unreadNotifications()->count(),
+            // Keeps the messages badge right even when the WebSocket server is unreachable.
+            'unread_messages' => $user->unreadMessagesCount(),
             'notifications' => $notifications->map(fn (DatabaseNotification $notification) => $this->present($notification))->values(),
             'server_time' => now()->toIso8601String(),
         ]);

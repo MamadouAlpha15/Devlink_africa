@@ -128,6 +128,17 @@
                             @endif
                         @endif
 
+                        {{-- Messagerie privée (cahier, section 13). --}}
+                        @if ($canMessage)
+                            <form method="POST" action="{{ route('messages.start', $user) }}">
+                                @csrf
+                                <button type="submit" class="btn-secondary btn-sm">
+                                    <x-icon name="message" class="h-4 w-4" />
+                                    Envoyer un message
+                                </button>
+                            </form>
+                        @endif
+
                         {{-- Enregistrer ce développeur. Le partial ne rend rien
                              pour un visiteur ni sur son propre profil. --}}
                         @include('partials.favorite-button', ['type' => 'developer', 'model' => $user])
