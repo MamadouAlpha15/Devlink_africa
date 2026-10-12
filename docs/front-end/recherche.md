@@ -1,7 +1,12 @@
 # Trouver des développeurs — guide pour le front-end
 
-> Backend prêt sur la branche `feature/search`. La vue actuelle est **fonctionnelle mais sans design** :
-> tu peux la réécrire entièrement, tant que tu gardes les noms des paramètres de recherche.
+> Backend prêt. Les vues de ce domaine sont **designées** : avant de
+> les retoucher, lisez [design-system.md](design-system.md) et
+> [composants.md](composants.md).
+>
+> Ce document décrit le **contrat avec le backend** : routes, variables et
+> champs de formulaire. Ce sont ces noms-là qui ne doivent pas changer d'un
+> seul côté.
 
 ## Page
 

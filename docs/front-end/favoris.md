@@ -27,7 +27,7 @@ Partial prêt à l'emploi : `resources/views/partials/favorite-button.blade.php`
 @include('partials.favorite-button', ['type' => 'project', 'model' => $project])
 ```
 
-Il affiche « ☆ Ajouter aux favoris » ou « ★ Dans mes favoris » selon l'état, rien pour un visiteur, et rien sur son propre profil.
+Il affiche « Enregistrer » ou « Enregistré » selon l'état, avec une icône de marque-page (pleine quand c'est enregistré), rien pour un visiteur, et rien sur son propre profil. Le marque-page plutôt que l'étoile : l'étoile sert déjà à noter les ressources.
 Déjà placé sur les pages détail d'un développeur, d'une ressource et d'un projet. Tu peux le redessiner (icône cœur / étoile…).
 
 Pour savoir dans une vue si un élément est en favori : `auth()->user()->hasFavorited($model)`.

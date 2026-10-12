@@ -1,7 +1,12 @@
 # DevScore, classement & badges — guide pour le front-end
 
-> Backend prêt sur la branche `feature/devscore` (cahier, sections 15, 16 et 17).
-> Les vues actuelles sont **fonctionnelles mais sans design** : podium, médailles, barres de progression… à toi de jouer.
+> Backend prêt (cahier, sections 15, 16 et 17). Les vues de ce domaine sont **designées** : avant de
+> les retoucher, lisez [design-system.md](design-system.md) et
+> [composants.md](composants.md).
+>
+> Ce document décrit le **contrat avec le backend** : routes, variables et
+> champs de formulaire. Ce sont ces noms-là qui ne doivent pas changer d'un
+> seul côté.
 
 ## Pages
 
@@ -64,18 +69,30 @@ Seuls les profils publics, actifs et complétés sont classés.
 
 ## Badges automatiques (cahier, section 17)
 
-| Badge | Condition |
-|---|---|
-| 🚀 Premier projet | A créé un projet |
-| 🤝 Collaborateur | A rejoint le projet d'un autre membre |
-| 🏗️ Builder | Un de ses projets est terminé |
-| 🔥 Expert Laravel | Niveau « Expert » en Laravel |
-| ⭐ Contributeur actif | Au moins 3 ressources publiées |
-| 🌍 Panafricain | Ses équipes réunissent des membres d'au moins 3 pays |
+Six badges. Le `slug` est stable : c'est **lui** que le front-end utilise pour
+choisir l'icône, et non le champ `icon` de la base, qui contient un emoji et
+n'est jamais affiché.
 
-Un badge gagné apparaît sur le profil public, dans le classement, et dans le fil d'activité (`activities`, type `badge_earned`).
-Quand un badge est débloqué en changeant une compétence, le message `session('status')` le signale (« Nouveau badge : 🔥 Expert Laravel ! »).
+| Badge | `slug` | Icône affichée | Condition |
+|---|---|---|---|
+| Premier projet | `premier-projet` | `rocket` | A créé un projet |
+| Collaborateur | `collaborateur` | `handshake` | A rejoint le projet d'un autre membre |
+| Builder | `builder` | `hammer` | Un de ses projets est terminé |
+| Expert Laravel | `expert-laravel` | `flame` | Niveau « Expert » en Laravel |
+| Contributeur actif | `contributeur-actif` | `star` | Au moins 3 ressources publiées |
+| Panafricain | `panafricain` | `globe` | Ses équipes réunissent des membres d'au moins 3 pays |
 
+La correspondance vit dans `resources/views/components/badge-icon.blade.php`.
+Un badge ajouté plus tard sans y être déclaré retombe sur l'icône `medal` :
+jamais de case vide.
+
+Un badge gagné apparaît sur le profil public, dans le classement, et dans le fil
+d'activité (`activities`, type `badge_earned`).
+
+Quand un badge est débloqué en changeant une compétence, `session('status')` le
+signale — attention, **le message contient l'emoji du badge** (« Nouveau badge :
+Expert Laravel ! » précédé de son emoji). Si vous l'affichez ailleurs que dans
+le bandeau de message standard, retirez-le.
 ## Navigation
 
 Lien **Classement** (tout le monde) et **Mon DevScore** (menu du compte) ajoutés dans `layouts/navigation.blade.php`.

@@ -1,8 +1,12 @@
 # Dev Resources — guide pour le front-end
 
-> Backend prêt sur la branche `feature/resources` (cahier, sections 6 et 7).
-> Les vues actuelles sont **fonctionnelles mais sans design** : tu peux les réécrire entièrement,
-> tant que tu gardes les noms des champs, des paramètres et des routes.
+> Backend prêt (cahier, sections 6 et 7). Les vues de ce domaine sont **designées** : avant de
+> les retoucher, lisez [design-system.md](design-system.md) et
+> [composants.md](composants.md).
+>
+> Ce document décrit le **contrat avec le backend** : routes, variables et
+> champs de formulaire. Ce sont ces noms-là qui ne doivent pas changer d'un
+> seul côté.
 
 ## Pages
 
@@ -92,7 +96,7 @@ Supprimer : `DELETE /resources/{slug}` (route `resources.destroy`).
 
 - Ressource publiée : **+30** pour l'auteur
 - Chaque like : **+5** pour l'auteur ; retirer son like reprend les 5 points (impossible de « farmer » des points)
-- 3 ressources publiées : badge ⭐ Contributeur actif
+- 3 ressources publiées : badge Contributeur actif
 
 ## Navigation
 

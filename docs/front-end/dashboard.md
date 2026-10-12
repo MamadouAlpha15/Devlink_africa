@@ -38,7 +38,7 @@ Chaque `$activity` :
 |---|---|
 | `user` | Ibrahim Sow (lien `route('devs.show', $activity->user)`) |
 | `type->label()` | « a publié une ressource », « a créé un projet », « a rejoint un projet », « a obtenu un badge » |
-| `$activityFeed->subjectTitle($activity)` | « Orange Money pour Laravel », « AfricaDelivery », « 🌍 Panafricain » |
+| `$activityFeed->subjectTitle($activity)` | « Orange Money pour Laravel », « AfricaDelivery ». **Attention** : pour un badge, cette méthode préfixe l'emoji stocké en base au nom. Les vues détectent donc le cas `Badge` et affichent l'icône avec `<x-badge-icon>` plutôt que d'appeler cette méthode. |
 | `$activityFeed->linkFor($activity)` | Lien vers la ressource / le projet, ou `null` pour un badge |
 | `created_at->diffForHumans()` | « il y a 2 heures » |
 

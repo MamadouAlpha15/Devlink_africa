@@ -1,7 +1,12 @@
 # Profils — guide pour le front-end
 
-> Backend prêt sur la branche `feature/profiles`. Les vues actuelles sont **fonctionnelles mais sans design** :
-> tu peux les réécrire entièrement, tant que tu gardes les noms des champs de formulaire et les routes.
+> Backend prêt. Les vues de ce domaine sont **designées** : avant de
+> les retoucher, lisez [design-system.md](design-system.md) et
+> [composants.md](composants.md).
+>
+> Ce document décrit le **contrat avec le backend** : routes, variables et
+> champs de formulaire. Ce sont ces noms-là qui ne doivent pas changer d'un
+> seul côté.
 
 ## Pages
 

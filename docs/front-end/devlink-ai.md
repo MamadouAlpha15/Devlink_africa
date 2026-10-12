@@ -1,8 +1,12 @@
 # DevLink AI — guide pour le front-end
 
-> Backend prêt sur la branche `feature/ai` (cahier, section 18 — la fonctionnalité « WOW »).
-> Les vues actuelles sont **fonctionnelles mais sans design** : c'est la page à soigner le plus pour la démo
-> (animation pendant la recherche, cartes de résultats avec le pourcentage bien visible…).
+> Backend prêt (cahier, section 18). Les vues de ce domaine sont **designées** : avant de
+> les retoucher, lisez [design-system.md](design-system.md) et
+> [composants.md](composants.md).
+>
+> Ce document décrit le **contrat avec le backend** : routes, variables et
+> champs de formulaire. Ce sont ces noms-là qui ne doivent pas changer d'un
+> seul côté.
 
 ## Parcours
 

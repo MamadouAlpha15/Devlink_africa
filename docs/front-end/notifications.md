@@ -6,21 +6,27 @@
 
 ## Ce qui déclenche une notification
 
-| Notification | Reçue par | Icône | Email aussi |
-|---|---|---|---|
-| Nouvelle demande de collaboration | Propriétaire + co-responsables (demande) / développeur invité (invitation) | 🤝 | ✅ |
-| Demande acceptée | Le développeur accepté | 🎉 | ✅ |
-| Projet rejoint | L'équipe, quand un invité accepte | 🚀 | ✅ |
-| Nouveau follower | La personne suivie | 👋 | — |
-| Ressource publiée | Les abonnés de l'auteur | 📦 | — |
-| Commentaire | L'auteur de la ressource | 💬 | — |
-| Badge obtenu (bonus) | Le membre | icône du badge | — |
-| Nouveau message | (avec la messagerie) | | |
+Le backend stocke une **icône sous forme d'emoji** dans `data['icon']`.
+L'interface ne l'affiche jamais : elle la traduit en icône du jeu via
+`<x-notification-icon>`. La colonne « Icône affichée » donne le nom résultant.
 
+| Notification | Reçue par | Icône affichée | Email aussi |
+|---|---|---|---|
+| Nouvelle demande de collaboration | Propriétaire + co-responsables (demande) / développeur invité (invitation) | `handshake` | Oui |
+| Demande acceptée | Le développeur accepté | `check-circle` | Oui |
+| Projet rejoint | L'équipe, quand un invité accepte | `rocket` | Oui |
+| Nouveau follower | La personne suivie | `user-plus` | — |
+| Ressource publiée | Les abonnés de l'auteur | `package` | — |
+| Commentaire | L'auteur de la ressource | `message` | — |
+| Badge obtenu (bonus) | Le membre | l'icône du badge | — |
+| Nouveau message | Le destinataire | `message` | — |
+
+Un emoji non prévu dans la table retombe sur `bell`. La correspondance vit dans
+`resources/views/components/notification-icon.blade.php`, et nulle part ailleurs.
 Chaque membre choisit dans **Modifier mon profil** : « sur la plateforme » (`notify_on_platform`) et/ou « par email » (`notify_by_email`).
 En local, les emails ne partent pas : ils sont écrits dans `storage/logs/laravel.log`.
 
-## La cloche 🔔 (dans `layouts/navigation.blade.php`)
+## La cloche (dans `layouts/navigation.blade.php`)
 
 Composant Alpine `notificationBell` (code : `resources/js/notifications.js`), déjà placé dans la navigation, visible aussi sur mobile.
 
@@ -45,7 +51,7 @@ Comportement déjà géré par le script :
 - les navigateurs n'autorisent le son qu'**après un premier clic ou une touche** sur la page : c'est normal.
 
 Tu peux redessiner librement la cloche et le menu (garde `x-data="notificationBell(...)"` et les noms ci-dessus).
-⚠️ Après avoir modifié `resources/js` ou `resources/css` : `npm run dev` (ou `npm run build`).
+**Important** : après avoir modifié `resources/js` ou `resources/css`, relancez `npm run dev` (ou `npm run build`).
 
 ## Routes
 
@@ -64,7 +70,7 @@ Réponse de `/notifications/poll` :
 {
   "unread": 2,
   "notifications": [
-    { "id": "…", "message": "Ibrahim Sow souhaite rejoindre AfricaDelivery.", "icon": "🤝", "url": "/notifications/…", "read": false, "time": "il y a 5 secondes" }
+    { "id": "…", "message": "Ibrahim Sow souhaite rejoindre AfricaDelivery.", "icon": "<emoji fourni par le backend>", "url": "/notifications/…", "read": false, "time": "il y a 5 secondes" }
   ],
   "server_time": "2026-10-12T10:00:20+00:00"
 }
