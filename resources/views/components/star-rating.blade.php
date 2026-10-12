@@ -1,9 +1,9 @@
 {{--
     Note sur cinq, en lecture seule.
 
-    Cinq étoiles dessinées plutôt que le caractère « ★ » : la police ne rend
-    pas l'étoile de la même façon d'un système à l'autre, et un caractère ne
-    se colore pas à moitié.
+    Cinq étoiles dessinées en SVG plutôt que le caractère typographique
+    correspondant : la police ne le rend pas de la même façon d'un système
+    à l'autre, et un caractère ne se colore pas à moitié.
 
     Usage : <x-star-rating :value="$review->rating" />
             <x-star-rating :value="4.2" show-value />

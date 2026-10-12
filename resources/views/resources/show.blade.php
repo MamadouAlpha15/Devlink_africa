@@ -301,7 +301,7 @@
 
                             <div class="min-w-0 flex-1">
                                 <div class="flex items-start justify-between gap-3">
-                                    <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+                                    <div class="flex min-w-0 flex-1 flex-wrap items-center gap-x-2 gap-y-1">
                                         <a href="{{ route('devs.show', $comment->user) }}" class="text-sm font-medium text-ink-900 hover:underline dark:text-white">
                                             {{ $comment->user->name }}
                                         </a>
@@ -334,13 +334,19 @@
                                             </span>
                                         </form>
                                     @endcan
+
+                                    {{-- Signaler : icône seule, pour ne pas alourdir la ligne. --}}
+                                    @include('partials.report-button', [
+                                        'type' => 'comment',
+                                        'model' => $comment,
+                                        'authorId' => $comment->user_id,
+                                        'compact' => true,
+                                    ])
                                 </div>
 
                                 <p class="mt-1 whitespace-pre-line text-sm leading-relaxed text-ink-700 dark:text-ink-300">
                                     {{ $comment->body }}
                                 </p>
-
-                                @include('partials.report-button', ['type' => 'comment', 'model' => $comment, 'authorId' => $comment->user_id])
                             </div>
                         </li>
 

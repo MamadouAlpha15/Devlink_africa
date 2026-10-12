@@ -148,7 +148,14 @@
             droite est plus étroite et ne descend pas sous le contenu.
         --}}
         <div class="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_21rem]">
-            <div class="space-y-6">
+            {{--
+                `min-w-0` sur les deux colonnes : un élément de grille a
+                `min-width: auto` par défaut, donc il refuse de descendre sous
+                la largeur minimale de son contenu. Or une ligne en `truncate`
+                est en `white-space: nowrap` : son minimum, c'est son texte
+                entier. Sans cela la colonne déborde de l'écran sur téléphone.
+            --}}
+            <div class="min-w-0 space-y-6">
 
                 {{-- Développeurs recommandés --}}
                 <section class="panel">
@@ -246,7 +253,7 @@
             </div>
 
             {{-- Fil d'activité --}}
-            <aside class="panel h-fit lg:sticky lg:top-20">
+            <aside class="panel h-fit min-w-0 lg:sticky lg:top-20">
                 <x-section-heading title="Fil d'activité" />
 
                 {{-- Deux portées seulement : mon réseau, ou tout le monde. --}}

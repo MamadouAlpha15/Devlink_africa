@@ -13,6 +13,10 @@
 
       <x-notification-icon :emoji="..." />  rendu serveur d'une notification.
 
+    Les clés sont écrites en points de code Unicode et non en caractères :
+    aucun emoji n'apparaît dans le code, et une clé reste lisible même dans
+    un éditeur ou un terminal qui ne sait pas les afficher.
+
     Un emoji inconnu retombe sur la cloche : jamais de case vide.
 --}}
 @props([
@@ -22,19 +26,21 @@
 
 @php
     $iconFor = [
-        // Notifications
-        '🤝' => 'handshake',      // demande de collaboration
-        '🎉' => 'check-circle',   // demande acceptée
-        '🚀' => 'rocket',         // projet rejoint
-        '👋' => 'user-plus',      // nouveau follower
-        '📦' => 'package',        // ressource publiée
-        '💬' => 'message',        // commentaire
-        // Badges (app/Models/Badge) : une notification de badge reprend son icône
-        '🔥' => 'flame',
-        '⭐' => 'star',
-        '🌍' => 'globe',
-        '🏗️' => 'hammer',
-        '🏗' => 'hammer',         // même badge sans le sélecteur de variante
+        // --- Notifications -------------------------------------------
+        "\u{1F91D}" => 'handshake',     // poignée de main : demande de collaboration
+        "\u{1F389}" => 'check-circle',  // confettis : demande acceptée
+        "\u{1F680}" => 'rocket',        // fusée : projet rejoint
+        "\u{1F44B}" => 'user-plus',     // main qui salue : nouveau follower
+        "\u{1F4E6}" => 'package',       // colis : ressource publiée
+        "\u{1F4AC}" => 'message',       // bulle : commentaire
+
+        // --- Badges (app/Models/Badge) -------------------------------
+        // Une notification de badge reprend l'icône du badge.
+        "\u{1F525}" => 'flame',         // flamme : Expert Laravel
+        "\u{2B50}" => 'star',           // étoile : Contributeur actif
+        "\u{1F30D}" => 'globe',         // globe : Panafricain
+        "\u{1F3D7}\u{FE0F}" => 'hammer', // grue : Builder
+        "\u{1F3D7}" => 'hammer',        // la même, sans le sélecteur de variante
     ];
 
     $fallback = 'bell';
