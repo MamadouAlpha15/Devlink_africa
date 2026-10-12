@@ -7,8 +7,8 @@ use App\Models\User;
 class UserPolicy
 {
     /**
-     * Public profile page: visible to everyone unless private or suspended.
-     * The owner and admins can always see it.
+     * Public profile page: visible to everyone once the email is verified,
+     * unless private or suspended. The owner and admins can always see it.
      */
     public function view(?User $viewer, User $user): bool
     {
@@ -16,7 +16,7 @@ class UserPolicy
             return true;
         }
 
-        return $user->is_public && ! $user->isSuspended();
+        return $user->is_public && $user->hasVerifiedEmail() && ! $user->isSuspended();
     }
 
     public function follow(User $viewer, User $user): bool

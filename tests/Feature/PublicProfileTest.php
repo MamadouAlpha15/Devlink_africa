@@ -57,6 +57,19 @@ class PublicProfileTest extends TestCase
         $this->actingAs(User::factory()->admin()->create())->get("/devs/{$private->username}")->assertOk();
     }
 
+    public function test_unverified_profiles_are_hidden_until_the_email_is_verified(): void
+    {
+        $unverified = User::factory()->unverified()->create();
+
+        $this->get("/devs/{$unverified->username}")->assertNotFound();
+        $this->actingAs(User::factory()->create())->get("/devs/{$unverified->username}")->assertNotFound();
+        $this->actingAs($unverified)->get("/devs/{$unverified->username}")->assertOk();
+
+        $unverified->markEmailAsVerified();
+
+        $this->actingAs(User::factory()->create())->get("/devs/{$unverified->username}")->assertOk();
+    }
+
     public function test_unknown_usernames_return_404(): void
     {
         $this->get('/devs/personne')->assertNotFound();

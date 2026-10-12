@@ -133,4 +133,11 @@ class DashboardTest extends TestCase
     {
         $this->get('/dashboard')->assertRedirect('/login');
     }
+
+    public function test_unverified_members_are_sent_to_the_verification_notice(): void
+    {
+        $this->actingAs(User::factory()->unverified()->create())
+            ->get('/dashboard')
+            ->assertRedirect(route('verification.notice'));
+    }
 }

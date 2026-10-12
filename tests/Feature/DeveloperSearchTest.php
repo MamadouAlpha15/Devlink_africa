@@ -77,6 +77,7 @@ class DeveloperSearchTest extends TestCase
         $this->developer('Private Dev', ['is_public' => false]);
         $this->developer('Suspended Dev', ['suspended_at' => now()]);
         $this->developer('Incomplete Dev', ['profile_completed_at' => null]);
+        $this->developer('Unverified Dev', ['email_verified_at' => null]);
 
         $this->assertSame(['Visible Dev'], $this->names($this->get('/devs')));
     }

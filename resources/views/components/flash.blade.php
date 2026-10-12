@@ -18,7 +18,8 @@
         ->values();
 @endphp
 
-@if (session('status'))
+{{-- « verification-link-sent » est un code technique : le bandeau de vérification l'affiche. --}}
+@if (session('status') && session('status') !== 'verification-link-sent')
     <div x-data="dismissible" x-show="isVisible" x-transition.opacity class="alert-success">
         <x-icon name="check-circle" class="mt-px h-4 w-4 shrink-0" />
         <p class="flex-1 font-medium">{{ session('status') }}</p>
