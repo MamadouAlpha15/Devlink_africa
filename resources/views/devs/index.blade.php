@@ -248,7 +248,11 @@
                 {{-- Développeurs par pays (cahier, section 5) --}}
                 @if ($topCountries->isNotEmpty())
                     <div class="panel">
-                        <x-section-heading title="Développeurs par pays" />
+                        <x-section-heading title="Développeurs par pays">
+                            <x-slot name="action">
+                                <a href="{{ route('ecosystem') }}" class="link text-sm">Voir l'écosystème</a>
+                            </x-slot>
+                        </x-section-heading>
 
                         <div class="mt-5 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
                             @foreach ($topCountries as $country)
