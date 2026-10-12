@@ -263,8 +263,18 @@ class User extends Authenticatable implements MustVerifyEmail
     /** Conversations where the user is either participant. */
     public function conversations(): Builder
     {
-        return Conversation::query()
-            ->where('user_one_id', $this->id)
-            ->orWhere('user_two_id', $this->id);
+        return Conversation::query()->involving($this);
+    }
+
+    /**
+     * Messages received in any conversation and not read yet (badge of the navigation bar).
+     */
+    public function unreadMessagesCount(): int
+    {
+        return Message::query()
+            ->unread()
+            ->where('sender_id', '!=', $this->id)
+            ->whereHas('conversation', fn (Builder $conversation) => $conversation->involving($this))
+            ->count();
     }
 }

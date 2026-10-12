@@ -73,6 +73,8 @@ export default function notificationBell({ pollUrl, readAllUrl, csrf, initialUnr
 
                 this.items = [...fresh, ...this.items].slice(0, DROPDOWN_SIZE);
                 this.unread = data.unread;
+                // Shared with the messages badge (resources/js/messages.js).
+                window.dispatchEvent(new CustomEvent('devlink:unread-messages', { detail: { total: data.unread_messages ?? 0 } }));
                 this.since = data.server_time;
                 this.updateTitle();
             } catch {

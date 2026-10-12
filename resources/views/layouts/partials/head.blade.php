@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="csrf-token" content="{{ csrf_token() }}">
+@auth
+    {{-- Ouvre la connexion temps réel (resources/js/echo.js) pour les membres seulement. --}}
+    <meta name="devlink-user" content="{{ auth()->id() }}">
+@endauth
 
 {{--
     Ne transmet l'URL complète qu'aux pages du même site ; vers l'extérieur,

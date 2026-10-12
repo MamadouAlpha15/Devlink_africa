@@ -72,6 +72,7 @@ class DeveloperController extends Controller
             'isOwner' => $viewer?->is($user) ?? false,
             'isFollowing' => $viewer ? $viewer->following()->whereKey($user->id)->exists() : false,
             'canFollow' => $viewer ? Gate::forUser($viewer)->allows('follow', $user) : false,
+            'canMessage' => $viewer ? Gate::forUser($viewer)->allows('message', $user) : false,
             'invitableProjects' => $viewer && ! $viewer->is($user) ? $this->invitableProjects($viewer, $user) : collect(),
         ]);
     }

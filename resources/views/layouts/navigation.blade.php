@@ -43,6 +43,7 @@
             ['label' => 'Mon profil public', 'icon' => 'user', 'url' => route('devs.show', auth()->user())],
             ['label' => 'Modifier mon profil', 'icon' => 'pencil', 'url' => route('developer-profile.edit')],
             ['label' => 'Mon DevScore', 'icon' => 'trending-up', 'url' => route('devscore.show')],
+            ['label' => 'Mes messages', 'icon' => 'message', 'url' => route('messages.index')],
             ['label' => 'Mes favoris', 'icon' => 'bookmark', 'url' => route('favorites.index')],
             ['label' => 'Mes collaborations', 'icon' => 'handshake', 'url' => route('collaborations.index')],
             ...(auth()->user()->is_admin
@@ -101,6 +102,23 @@
                 @auth
                     {{-- Les `<symbol>` des icônes de notification, déposés une fois. --}}
                     <x-notification-icon sprite />
+
+                    {{-- Messagerie : le compteur se met à jour en temps réel (resources/js/messages.js). --}}
+                    <a
+                        href="{{ route('messages.index') }}"
+                        x-data="messagesBadge({ unread: {{ auth()->user()->unreadMessagesCount() }}, meId: {{ auth()->id() }} })"
+                        class="btn btn-ghost btn-square relative {{ request()->routeIs('messages.*') ? 'text-brand-600 dark:text-brand-400' : '' }}"
+                        :aria-label="unread > 0 ? `Messages, ${label} non lus` : 'Messages'"
+                        aria-label="Messages"
+                    >
+                        <x-icon name="message" class="h-5 w-5" />
+                        <span
+                            x-show="unread > 0"
+                            x-cloak
+                            x-text="label"
+                            class="tabular absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full border-2 border-white bg-brand-600 px-1 text-[0.625rem] font-semibold leading-none text-white dark:border-ink-900 dark:bg-brand-500"
+                        ></span>
+                    </a>
 
                     {{--
                         Cloche de notifications. Le composant Alpine vient du

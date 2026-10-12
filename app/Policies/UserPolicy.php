@@ -23,4 +23,12 @@ class UserPolicy
     {
         return ! $viewer->is($user) && $this->view($viewer, $user);
     }
+
+    /**
+     * "Contacter": start a private conversation with a member whose profile I can see.
+     */
+    public function message(User $viewer, User $user): bool
+    {
+        return ! $viewer->is($user) && $this->view($viewer, $user) && ! $user->isSuspended();
+    }
 }
