@@ -2,7 +2,7 @@
     Administration — projets : consulter et supprimer.
 
     Variables : $projects (paginé, avec owner, memberships_count,
-    reports_count) et $q. Voir docs/front-end/administration.md.
+    reports_count) et $q. Voir docs/front-end/pages.md.
 
     Supprimer un projet annule aussi les demandes en attente : la confirmation
     se fait donc en deux temps, sur place.

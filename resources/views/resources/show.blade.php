@@ -2,7 +2,7 @@
     Détail d'une ressource.
 
     Variables : $resource, $reviews, $myReview, $comments, $hasLiked,
-    $canInteract, $canComment, $canUpdate. Voir docs/front-end/ressources.md.
+    $canInteract, $canComment, $canUpdate. Voir docs/front-end/pages.md.
 
     Deux colonnes : à gauche ce qu'on lit (description, avis, commentaires),
     à droite ce sur quoi on agit (télécharger, liens, auteur).

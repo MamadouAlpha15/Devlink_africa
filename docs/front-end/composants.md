@@ -1,51 +1,71 @@
 # Les composants
 
-35 composants Blade et 14 composants Alpine. **Cherchez ici avant d'écrire du
+35 briques Blade et 14 composants Alpine. **Cherchez ici avant d'écrire du
 balisage** : la moitié des pages n'a besoin que d'assembler ce qui existe.
 
-Les treize composants hérités de Breeze (`primary-button`, `text-input`,
-`nav-link`…) ne sont plus utilisés nulle part : ils restent pour compatibilité,
-n'en ajoutez pas d'usage.
+Les treize composants hérités de Breeze — `primary-button`, `text-input`,
+`nav-link` et les autres — ne sont plus utilisés nulle part. Ils restent pour
+compatibilité ; n'en ajoutez pas d'usage.
 
 ## Afficher une personne
 
-| Composant | Props | Ce que ça fait |
-|---|---|---|
-| `<x-avatar>` | `user`, `size` (`sm`/`md`/`lg`), `ring` | Photo, ou initiales sur un rond neutre si absente. |
-| `<x-dev-card>` | `developer`, `score`, `matchedSkills` | La carte d'un développeur dans une liste. `score` affiche l'anneau de correspondance. |
-| `<x-devscore>` | `score`, `size` | La pastille de DevScore. |
-| `<x-availability>` | `user`, `showLabel` | Disponible / occupé, avec sa pastille. |
-| `<x-country-label>` | `country`, `city` | Drapeau SVG + nom du pays (+ ville). Gère `country = null`. |
-| `<x-flag>` | `country` ou `code`, `size` | Le drapeau seul, en SVG. **Jamais l'emoji de la base.** |
-| `<x-badge-icon>` | `badge` | L'icône d'un badge, choisie d'après son **slug**. |
+`<x-avatar>` prend un `user`, une `size` parmi `sm`, `md` et `lg`, et un `ring`
+facultatif. Il affiche la photo, ou les initiales sur un rond neutre si elle
+manque.
+
+`<x-dev-card>` prend un `developer`, et facultativement un `score` — qui fait
+apparaître l'anneau de correspondance — et des `matchedSkills` à mettre en
+avant. C'est la carte d'un développeur dans une liste.
+
+`<x-devscore>` prend un `score` et une `size`, et rend la pastille de score.
+`<x-availability>` prend un `user` et dit s'il est disponible ou occupé.
+
+`<x-country-label>` prend un `country` et une `city` facultative, et rend le
+drapeau SVG suivi du nom. Il gère `country = null` sans broncher. `<x-flag>`
+rend le drapeau seul, à partir d'un `country` ou d'un `code` — **jamais l'emoji
+stocké en base**.
+
+`<x-badge-icon>` prend un `badge` et rend son icône, choisie d'après son slug.
 
 ## Afficher un contenu
 
-| Composant | Props | Ce que ça fait |
-|---|---|---|
-| `<x-project-card>` | `project` | La carte d'un projet. Met en avant les postes ouverts. |
-| `<x-resource-card>` | `resource` | La carte d'une ressource. Les compteurs disparaissent si la requête ne les a pas chargés. |
-| `<x-project-status>` | `status` | Idée / Recrutement / En cours / Terminé, en pastille. |
-| `<x-skill-chips>` | `skills`, `limit`, `highlight`, `withLevel` | Les compétences en puces, avec un « +N » au-delà de `limit`. |
-| `<x-star-rating>` | `value`, `showValue`, `size` | Une note sur cinq, en étoiles dessinées. Lecture seule. |
-| `<x-stat>` | `value`, `label` | Un compteur nu, sans boîte. |
+`<x-project-card>` prend un `project` et met en avant les postes ouverts, parce
+que c'est l'information qui donne envie de cliquer. `<x-resource-card>` prend
+une `resource` ; ses compteurs disparaissent d'eux-mêmes si la requête ne les a
+pas chargés.
+
+`<x-project-status>` prend un `status` et rend la pastille Idée, Recrutement,
+En cours ou Terminé.
+
+`<x-skill-chips>` prend des `skills`, une `limit`, des compétences à
+`highlight` et un `withLevel` facultatif ; au-delà de la limite, il affiche un
+« +N ». `<x-star-rating>` prend une `value`, un `showValue` et une `size`, et
+rend une note sur cinq en étoiles dessinées, en lecture seule. `<x-stat>` prend
+une `value` et un `label`, et rend un compteur nu, sans boîte.
 
 ## Structurer une page
 
-| Composant | Props | Ce que ça fait |
-|---|---|---|
-| `<x-page-header>` | `title`, `subtitle`, `backLink`, `backLabel`, `actions` | L'en-tête standard. Le slot par défaut sert aux sous-titres riches, la prop `subtitle` n'accepte que du texte. |
-| `<x-section-heading>` | `title`, `count`, `action` | Le titre d'une section dans une carte. |
-| `<x-empty-state>` | `icon`, `title`, `action` | Le message d'une liste vide. Le slot porte l'explication. |
-| `<x-flash>` | `errorKeys` | Le message de `session('status')` et les erreurs métier nommées. |
-| `<x-icon>` | `name`, `strokeWidth`, `symbol` | 82 icônes. Avec `symbol`, rend un `<symbol>` réutilisable via `<use>`. |
-| `<x-notification-icon>` | `emoji`, `sprite` | Traduit l'emoji d'une notification en icône. `sprite` dépose les symboles et la table. |
-| `<x-theme-toggle>` | — | La bascule clair / sombre. |
-| `<x-logo>` | `withText` | La marque. |
+`<x-page-header>` prend un `title`, un `subtitle`, un `backLink` avec son
+`backLabel`, et un slot `actions`. Son slot par défaut sert aux sous-titres
+riches : la prop `subtitle` n'accepte que du texte.
 
-## Les partials réutilisables
+`<x-section-heading>` prend un `title`, un `count` et un slot `action`, pour un
+titre de section dans une carte.
 
-Ce ne sont pas des composants : on les appelle avec `@include` et un tableau.
+`<x-empty-state>` prend un `icon`, un `title` et un slot `action` ; son slot par
+défaut porte l'explication. `<x-flash>` affiche le message de `session('status')`
+et les erreurs métier dont on lui donne les clés.
+
+`<x-icon>` prend un `name` parmi 82, un `strokeWidth` facultatif, et un `symbol`
+qui le fait rendre un `<symbol>` réutilisable par `<use>`.
+`<x-notification-icon>` prend un `emoji` et le traduit ; avec `sprite`, il
+dépose les symboles et la table pour la cloche.
+
+`<x-theme-toggle>` rend la bascule clair-sombre, `<x-logo>` la marque.
+
+## Les boutons partagés
+
+Ce ne sont pas des composants : on les appelle par `@include` avec un tableau.
 
 ```blade
 @include('partials.favorite-button', ['type' => 'resource', 'model' => $resource])
@@ -57,44 +77,37 @@ Ce ne sont pas des composants : on les appelle avec `@include` et un tableau.
 ```
 
 `type` vaut `developer`, `resource`, `project` ou, pour le signalement,
-`comment`. Les deux ne rendent rien pour un visiteur ni sur son propre contenu.
+`comment`. Ni l'un ni l'autre ne rend quoi que ce soit pour un visiteur, ou sur
+son propre contenu.
 
 ## Les composants Alpine
 
-Déclarés dans `resources/js/app.js`, sauf indication contraire.
+Dix sont définis dans `resources/js/app.js`.
 
-| Nom | Signature | Rôle |
-|---|---|---|
-| `themeToggle` | — | Bascule et mémorise le thème. |
-| `filterDrawer` | — | `open()`, `close()`, `isOpen` : le tiroir de filtres sur mobile. |
-| `skillPicker` | `(selected, max)` | Liste de compétences filtrable et plafonnée. |
-| `charCounter` | `(valeur, max)` | `length`, `remaining`, `isNearLimit`. **L'ordre des arguments compte.** |
-| `imagePreview` | `(urlActuelle)` | Aperçu d'une image avant envoi. |
-| `confirmAction` | — | `ask()`, `cancel()`, `isConfirming` : confirmation en deux temps. |
-| `dismissible` | `(délai)` | Un message qu'on peut fermer. |
-| `copyToClipboard` | `(texte)` | `copy()`, `hasCopied`. |
-| `animatedScore` | `(cible, délai)` | Un score qui monte de 0 à sa valeur. |
-| `aiSearchForm` | — | Le formulaire de DevLink AI et son attente. |
-| `notificationBell` | `({pollUrl, readAllUrl, csrf, initialUnread})` | La cloche. Fourni par le backend (`notifications.js`). |
-| `messagesBadge` | `({unread, meId})` | Le compteur de messages non lus de la barre. |
-| `conversationList` | `({items, activeId, meId})` | La liste des conversations. |
-| `chatThread` | `({conversationId, meId, messages, …})` | Le fil d'une conversation. |
+`themeToggle` bascule et mémorise le thème. `filterDrawer` expose `open()`,
+`close()` et `isOpen` pour le tiroir de filtres sur mobile. `skillPicker` prend
+une sélection et un maximum, et rend la liste filtrable et plafonnée.
+`charCounter` prend **une valeur puis un maximum, dans cet ordre**, et expose
+`length`, `remaining` et `isNearLimit`. `imagePreview` prend l'URL actuelle et
+montre l'aperçu avant envoi. `confirmAction` expose `ask()`, `cancel()` et
+`isConfirming` pour la confirmation en deux temps. `dismissible` ferme un
+message, `copyToClipboard` expose `copy()` et `hasCopied`, `animatedScore` fait
+monter un score de zéro à sa valeur, et `aiSearchForm` gère l'attente de
+DevLink AI.
 
-Les quatre derniers viennent du backend, avec `messages.js` et
-`notifications.js`. **Gardez leurs noms de propriétés** : vous pouvez tout
-redessiner autour, pas les renommer. Voir [messagerie.md](messagerie.md) et
-[notifications.md](notifications.md).
+Quatre autres viennent du backend, avec `notifications.js` et `messages.js` :
+`notificationBell` pour la cloche, `messagesBadge` pour le compteur de la barre,
+`conversationList` et `chatThread` pour la messagerie. **Gardez leurs noms de
+propriétés** : tout l'habillage autour est libre, les noms non.
+[pages.md](pages.md) les détaille.
 
-## Écrire un nouveau composant
+## Avant d'en écrire un nouveau
 
-Trois questions avant de créer un fichier :
+Trois questions. Est-ce que ça se répète au moins trois fois — sinon, laissez le
+balisage dans la vue. Est-ce que ça porte une décision visuelle — un composant
+qui ne fait que passer des classes n'apporte rien, une classe dans `app.css`
+suffit. Et est-ce que le nom est en anglais.
 
-1. **Est-ce que ça se répète au moins trois fois ?** Sinon, laissez le balisage
-   dans la vue.
-2. **Est-ce que ça porte une décision visuelle ?** Un composant qui ne fait que
-   passer des classes n'apporte rien : une classe dans `app.css` suffit.
-3. **Est-ce que le nom est en anglais ?** Le code l'est, l'interface non.
-
-Et commentez **pourquoi**, pas quoi. `{{-- Carte d'un projet --}}` n'apprend
-rien ; « le titre passe avant les étiquettes : on lit le nom du projet, puis sa
-catégorie » explique une décision qu'on ne défera pas par accident.
+Commentez **pourquoi**, pas quoi. « Carte d'un projet » n'apprend rien ; « le
+titre passe avant les étiquettes : on lit le nom du projet, puis sa catégorie »
+explique une décision qu'on ne défera pas par accident.

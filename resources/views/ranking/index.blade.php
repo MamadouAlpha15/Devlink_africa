@@ -3,7 +3,7 @@
 
     Variables : $developers (paginé, 25/page, avec `points`), $firstRank,
     $filters, $periodLabel, $periods, $countries, $myRank.
-    Voir docs/front-end/devscore-classement.md.
+    Voir docs/front-end/pages.md.
 
     Le podium se signale par une médaille, pas par une estrade : trois
     icônes suffisent, et la colonne de rangs reste lisible de haut en bas.

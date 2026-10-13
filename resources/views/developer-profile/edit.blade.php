@@ -3,7 +3,7 @@
 
     Variables : $user, $completion (0–100), $countries, $skillsByCategory,
     $profileTypes, $experienceLevels, $availabilities, $skillLevels.
-    Voir docs/front-end/profils.md.
+    Voir docs/front-end/pages.md.
 
     Noms de champs imposés par le backend. Les cases à cocher sont doublées
     d'un champ caché à 0 : une case non envoyée vaut « désactivée ».

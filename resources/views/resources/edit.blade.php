@@ -2,7 +2,7 @@
     Modifier une ressource.
 
     Variables : $resource, $types, $countries, $skillsByCategory,
-    $fileExtensions. Voir docs/front-end/ressources.md.
+    $fileExtensions. Voir docs/front-end/pages.md.
 --}}
 <x-app-layout :title="'Modifier '.$resource->title">
     <div class="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">

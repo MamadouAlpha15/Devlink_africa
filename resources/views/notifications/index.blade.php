@@ -3,7 +3,7 @@
 
     Variable : $notifications (paginé). Chaque élément porte
     `data['icon']` (un emoji côté backend, traduit en icône ici),
-    `data['message']` et `read_at`. Voir docs/front-end/notifications.md.
+    `data['message']` et `read_at`. Voir docs/front-end/pages.md.
 --}}
 @php
     $unreadCount = auth()->user()->unreadNotifications()->count();

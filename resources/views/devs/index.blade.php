@@ -3,7 +3,7 @@
 
     Tous les filtres partent en GET vers `devs.index` : les noms des
     paramètres (q, country, city, skill, level, availability, type, sort)
-    sont imposés par le backend, voir docs/front-end/recherche.md.
+    sont imposés par le backend, voir docs/front-end/pages.md.
 
     La colonne de filtres est un seul formulaire : fixe à partir de `lg`,
     tiroir plein écran en dessous (composant Alpine `filterDrawer`).

@@ -3,7 +3,7 @@
 
     Variables : $user, $projects, $resources, $ratingAvg, $isOwner,
     $canFollow, $isFollowing, $invitableProjects.
-    Voir docs/front-end/profils.md.
+    Voir docs/front-end/pages.md.
 
     Rappel : `email` ne s'affiche que si `show_email`, et la disponibilité
     que si `show_availability` (géré par <x-availability>).

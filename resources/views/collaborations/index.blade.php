@@ -2,7 +2,7 @@
     Mes collaborations.
 
     Variables : $receivedInvitations, $receivedApplications,
-    $sentApplications, $history. Voir docs/front-end/projets.md.
+    $sentApplications, $history. Voir docs/front-end/pages.md.
 --}}
 @php
     // Total des éléments qui demandent une action de ma part.

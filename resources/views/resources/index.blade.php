@@ -3,7 +3,7 @@
 
     Variables : $resources (paginé, 12/page), $filters (q, type, skill,
     country, tag, sort), $hasFilters, $sorts, $types, $countries,
-    $skillsByCategory, $popularTags. Voir docs/front-end/ressources.md.
+    $skillsByCategory, $popularTags. Voir docs/front-end/pages.md.
 
     Même structure que « Trouver des développeurs » : colonne de filtres fixe
     sur grand écran, tiroir plein écran en dessous (composant `filterDrawer`).

@@ -3,7 +3,7 @@
     ressource. `$resource` est null à la création.
 
     Variables attendues : $types, $countries, $skillsByCategory,
-    $fileExtensions. Voir docs/front-end/ressources.md.
+    $fileExtensions. Voir docs/front-end/pages.md.
 --}}
 @php
     $selectedSkills = collect(old('skills', $resource?->skills->pluck('id')->all() ?? []))

@@ -2,7 +2,7 @@
     Publier une ressource.
 
     Variables : $types, $countries, $skillsByCategory, $fileExtensions.
-    Voir docs/front-end/ressources.md.
+    Voir docs/front-end/pages.md.
 --}}
 <x-app-layout title="Partager une ressource">
     <div class="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">

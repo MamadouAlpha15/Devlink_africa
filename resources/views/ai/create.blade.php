@@ -6,7 +6,7 @@
     Alpine `aiSearchForm` affiche un écran d'attente avec des étapes.
 
     Variables : $examples (4 phrases), $recentSearches (5 dernières).
-    Voir docs/front-end/devlink-ai.md.
+    Voir docs/front-end/pages.md.
 --}}
 <x-app-layout title="DevLink AI">
     <div class="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">

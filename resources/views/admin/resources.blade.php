@@ -2,7 +2,7 @@
     Administration — ressources : valider, refuser, supprimer.
 
     Variables : $resources (paginé, avec user et reports_count), $status,
-    $statuses. Voir docs/front-end/administration.md.
+    $statuses. Voir docs/front-end/pages.md.
 
     Les ressources en attente arrivent en premier : c'est la file de travail
     de l'administrateur, pas un catalogue.

@@ -4,7 +4,7 @@
     Variables : $project, $viewerMembership, $viewerPendingRequest,
     $canUpdate, $canManage, $canApply, $pendingApplications,
     $pendingInvitations, $suggestions, $skills.
-    Voir docs/front-end/projets.md.
+    Voir docs/front-end/pages.md.
 
     Les erreurs métier arrivent sous les clés `collaboration`,
     `project_role_id` et `member`.

@@ -2,7 +2,7 @@
     Administration — signalements : consulter et traiter.
 
     Variables : $reports (paginé), $status, $statuses, $actions.
-    Voir docs/front-end/administration.md.
+    Voir docs/front-end/pages.md.
 
     Des cartes et non un tableau : chaque signalement porte un texte libre de
     longueur variable et trois décisions possibles, ce qu'une ligne de tableau

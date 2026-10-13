@@ -3,7 +3,7 @@
 
     Variables : $user, $completion, $africaRank, $stats, $pending,
     $recommendedDevelopers, $interestingProjects, $feed, $feedScope,
-    $feedScopes, $activityFeed. Voir docs/front-end/dashboard.md.
+    $feedScopes, $activityFeed. Voir docs/front-end/pages.md.
 
     Lecture en trois temps : ce qui demande une action (profil à compléter,
     demandes en attente), puis où j'en suis (DevScore et compteurs), puis

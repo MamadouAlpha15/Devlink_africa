@@ -4,7 +4,7 @@
     Filtres GET : q, category, country, status, skill, sort.
     Variables : $projects (12/page), $filters, $hasFilters, $sorts,
     $categories, $statuses, $countries, $skillsByCategory.
-    Voir docs/front-end/projets.md.
+    Voir docs/front-end/pages.md.
 --}}
 @php
     // Pastilles des filtres actifs.

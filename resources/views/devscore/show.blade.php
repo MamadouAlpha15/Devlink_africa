@@ -3,7 +3,7 @@
 
     Variables : $user, $ranks (africa, country, month — chacun peut être null),
     $breakdown (action, points_each, times, total), $history, $badges.
-    Voir docs/front-end/devscore-classement.md.
+    Voir docs/front-end/pages.md.
 --}}
 @php
     // Rangs présentés comme un relevé : trois lignes, pas trois cartes.

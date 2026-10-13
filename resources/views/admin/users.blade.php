@@ -2,7 +2,7 @@
     Administration — utilisateurs : voir, rechercher, suspendre, supprimer.
 
     Variables : $users (paginé, avec country, projects_count, resources_count),
-    $q, $filter, $filters. Voir docs/front-end/administration.md.
+    $q, $filter, $filters. Voir docs/front-end/pages.md.
 
     Un tableau, parce qu'on compare des lignes entre elles. Les actions
     destructrices demandent confirmation sur place, sans fenêtre du navigateur.

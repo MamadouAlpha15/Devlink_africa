@@ -4,7 +4,7 @@
     Variables : $stats (users, users_this_month, suspended, projects,
     projects_recruiting, projects_completed, resources, resources_pending,
     countries, collaborations, reports_pending), $topCountries et
-    $signupsPerMonth. Voir docs/front-end/administration.md.
+    $signupsPerMonth. Voir docs/front-end/pages.md.
 
     Ce qui demande une action passe avant les chiffres : un administrateur
     vient ici pour savoir ce qu'il doit traiter, pas pour contempler des totaux.

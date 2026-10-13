@@ -3,7 +3,7 @@
 
     Variables : $search (->query), $criteria (skills, skill_categories,
     country, project_type, summary, engine), $results (score, matched_skills,
-    user). Voir docs/front-end/devlink-ai.md.
+    user). Voir docs/front-end/pages.md.
 --}}
 @php
     $usedClaude = ($criteria['engine'] ?? 'local') === 'claude';

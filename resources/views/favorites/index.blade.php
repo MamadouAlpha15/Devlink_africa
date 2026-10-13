@@ -1,7 +1,7 @@
 {{--
     Mes favoris.
 
-    Variables : $developers, $resources, $projects. Voir docs/front-end/favoris.md.
+    Variables : $developers, $resources, $projects. Voir docs/front-end/pages.md.
 
     Des listes, pas des galeries : on vient ici pour retrouver un élément
     précis et parfois le retirer, pas pour parcourir. Le bouton de retrait est
