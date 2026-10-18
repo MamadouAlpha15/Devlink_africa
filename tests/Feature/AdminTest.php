@@ -22,7 +22,13 @@ class AdminTest extends TestCase
     {
         parent::setUp();
 
-        $this->admin = User::factory()->admin()->create();
+        // Fixed identity: the factory draws a random first name from a list
+        // that contains "Ibrahim", so an unnamed admin made the user search
+        // test below fail about once in twenty runs.
+        $this->admin = User::factory()->admin()->create([
+            'name' => 'Admin AfriCommit',
+            'email' => 'admin@africommit.com',
+        ]);
     }
 
     private function report(object $target, string $reason = 'spam'): Report
