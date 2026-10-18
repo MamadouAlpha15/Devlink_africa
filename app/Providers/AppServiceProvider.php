@@ -5,7 +5,7 @@ namespace App\Providers;
 use Anthropic\Client;
 use App\Ai\ClaudeCriteriaExtractor;
 use App\Ai\DeveloperMatcher;
-use App\Ai\DevLinkAi;
+use App\Ai\AfriCommitAi;
 use App\Ai\KeywordCriteriaExtractor;
 use App\Models\Badge;
 use App\Models\Comment;
@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // DevLink AI: Claude when an API key is configured, otherwise only the local analyser.
+        // AfriCommit AI: Claude when an API key is configured, otherwise only the local analyser.
         $this->app->bind(ClaudeCriteriaExtractor::class, fn () => new ClaudeCriteriaExtractor(
             new Client(
                 apiKey: config('services.anthropic.key'),
@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
             config('services.anthropic.model'),
         ));
 
-        $this->app->bind(DevLinkAi::class, fn ($app) => new DevLinkAi(
+        $this->app->bind(AfriCommitAi::class, fn ($app) => new AfriCommitAi(
             claude: config('services.anthropic.key') ? $app->make(ClaudeCriteriaExtractor::class) : null,
             keywords: $app->make(KeywordCriteriaExtractor::class),
             matcher: $app->make(DeveloperMatcher::class),

@@ -20,7 +20,7 @@
                     <li><a href="{{ route('projects.index') }}" class="link-muted">Projets</a></li>
                     <li><a href="{{ route('ecosystem') }}" class="link-muted">L'écosystème</a></li>
                     @auth
-                        <li><a href="{{ route('ai.create') }}" class="link-muted">DevLink AI</a></li>
+                        <li><a href="{{ route('ai.create') }}" class="link-muted">AfriCommit AI</a></li>
                         <li><a href="{{ route('collaborations.index') }}" class="link-muted">Mes collaborations</a></li>
                     @endauth
                 </ul>
@@ -45,7 +45,7 @@
 
         <div class="mt-10 flex flex-col items-center justify-between gap-4 border-t border-ink-200 pt-6 sm:flex-row dark:border-ink-800">
             <p class="text-xs text-ink-500 dark:text-ink-400">
-                &copy; {{ now()->year }} DevLink Africa. Tous droits réservés.
+                &copy; {{ now()->year }} AfriCommit. Tous droits réservés.
             </p>
 
             <p class="flex items-center gap-1.5 text-xs text-ink-500 dark:text-ink-400">

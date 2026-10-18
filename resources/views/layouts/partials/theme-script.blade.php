@@ -20,12 +20,12 @@
         // coupé, requête bloquée, connexion lente — la page resterait vide.
         // Au bout de 2,5 s sans initialisation, on retire `js` : tout
         // redevient visible, sans animation. Le contenu passe avant l'effet.
-        window.__devlinkMotionWatchdog = window.setTimeout(function () {
+        window.__africommitMotionWatchdog = window.setTimeout(function () {
             document.documentElement.classList.remove('js');
         }, 2500);
 
         try {
-            var stored = window.localStorage.getItem('devlink.theme');
+            var stored = window.localStorage.getItem('africommit.theme');
             var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             var isDark = stored ? stored === 'dark' : prefersDark;
 

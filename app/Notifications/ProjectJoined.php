@@ -8,7 +8,7 @@ use App\Models\User;
 /**
  * "Projet rejoint": a developer accepted the team's invitation.
  */
-class ProjectJoined extends DevLinkNotification
+class ProjectJoined extends AfriCommitNotification
 {
     public function __construct(public Project $project, public User $member) {}
 

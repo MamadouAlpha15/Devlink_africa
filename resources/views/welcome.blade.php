@@ -83,7 +83,7 @@
                     </h1>
 
                     <p class="reveal lead mt-6" style="--reveal-delay: 70ms">
-                        DevLink Africa réunit les développeurs, designers et porteurs de projets
+                        AfriCommit réunit les développeurs, designers et porteurs de projets
                         des 54 pays du continent. Cherchez par compétence et par pays, ou
                         décrivez en une phrase le profil dont vous avez besoin.
                     </p>
@@ -125,12 +125,12 @@
                     @endguest
                 </div>
 
-                {{-- Démonstration de DevLink AI : la mécanique réelle, pas
+                {{-- Démonstration d'AfriCommit AI : la mécanique réelle, pas
                      de faux profils inventés. --}}
                 <div class="reveal card p-5 lg:mt-2" style="--reveal-delay: 180ms">
                     <div class="flex items-center gap-2">
                         <x-icon name="sparkles" class="h-4 w-4 text-brand-600 dark:text-brand-400" />
-                        <span class="text-sm font-semibold text-ink-900 dark:text-white">DevLink AI</span>
+                        <span class="text-sm font-semibold text-ink-900 dark:text-white">AfriCommit AI</span>
                     </div>
 
                     <p class="mt-3 text-sm leading-relaxed text-ink-600 dark:text-ink-400">

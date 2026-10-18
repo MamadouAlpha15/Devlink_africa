@@ -19,7 +19,7 @@
             {{-- Colonne du formulaire --}}
             <div class="flex w-full flex-col px-4 py-8 sm:px-6 lg:w-[56%] lg:px-12 xl:px-20">
                 <div class="flex items-center justify-between">
-                    <a href="{{ url('/') }}" aria-label="Accueil DevLink Africa">
+                    <a href="{{ url('/') }}" aria-label="Accueil AfriCommit">
                         <x-logo />
                     </a>
                     <x-theme-toggle />
@@ -39,7 +39,7 @@
                 </div>
 
                 <p class="text-center text-xs text-ink-500 dark:text-ink-400">
-                    &copy; {{ now()->year }} DevLink Africa
+                    &copy; {{ now()->year }} AfriCommit
                 </p>
             </div>
 
@@ -56,7 +56,7 @@
 
                     <p class="mt-5 text-[0.9375rem] leading-relaxed text-ink-400">
                         Publiez votre projet, décrivez les profils qui vous manquent,
-                        et laissez DevLink AI vous proposer les développeurs qui correspondent.
+                        et laissez AfriCommit AI vous proposer les développeurs qui correspondent.
                     </p>
 
                     {{-- Icônes nues, alignées optiquement sur la première ligne :

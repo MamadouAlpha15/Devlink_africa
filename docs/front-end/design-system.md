@@ -111,7 +111,7 @@ Quatre bandeaux — `.alert-info`, `.alert-success`, `.alert-warning`,
 Piloté par la classe `dark` sur `<html>`, posée par un script en ligne dans
 `layouts/partials/theme-script.blade.php` **avant le premier rendu** : sans
 cela, une page en thème sombre clignoterait en blanc au chargement. Le choix est
-conservé dans `localStorage` sous `devlink.theme` ; sans choix explicite, on
+conservé dans `localStorage` sous `africommit.theme` ; sans choix explicite, on
 suit la préférence du système.
 
 Chaque classe d'`app.css` porte déjà ses variantes `dark:`. Si vous écrivez des

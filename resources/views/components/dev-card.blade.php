@@ -1,7 +1,7 @@
 {{--
     Carte d'un développeur. Toute la carte est cliquable vers le profil.
 
-    Utilisée par /devs et par DevLink AI. Quand `score` est fourni, un
+    Utilisée par /devs et par AfriCommit AI. Quand `score` est fourni, un
     anneau de correspondance s'affiche : c'est le SEUL élément de couleur
     de marque de la carte, parce que c'est la seule information neuve.
 
@@ -45,7 +45,7 @@
             <x-country-label :country="$developer->country" :city="$developer->city" class="mt-1 !text-xs" />
         </div>
 
-        {{-- Anneau de correspondance (DevLink AI), sinon le DevScore.
+        {{-- Anneau de correspondance (AfriCommit AI), sinon le DevScore.
 
              Rayon 15,9155 dans un viewBox de 36 : la circonférence vaut
              exactement 100, donc le décalage est le complément du

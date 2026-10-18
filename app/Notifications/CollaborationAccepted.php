@@ -7,7 +7,7 @@ use App\Models\CollaborationRequest;
 /**
  * "Demande acceptée": the developer's application was accepted by the project team.
  */
-class CollaborationAccepted extends DevLinkNotification
+class CollaborationAccepted extends AfriCommitNotification
 {
     public function __construct(public CollaborationRequest $request) {}
 

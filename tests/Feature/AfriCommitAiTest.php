@@ -21,7 +21,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use Tests\TestCase;
 
-class DevLinkAiTest extends TestCase
+class AfriCommitAiTest extends TestCase
 {
     use RefreshDatabase;
 

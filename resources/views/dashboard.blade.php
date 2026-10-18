@@ -32,7 +32,7 @@
             <x-slot name="actions">
                 <a href="{{ route('ai.create') }}" class="btn-secondary btn-sm">
                     <x-icon name="sparkles" class="h-4 w-4" />
-                    DevLink AI
+                    AfriCommit AI
                 </a>
                 <a href="{{ route('projects.create') }}" class="btn-primary btn-sm">
                     <x-icon name="plus" class="h-4 w-4" />
@@ -161,7 +161,7 @@
                 <section class="panel">
                     <x-section-heading title="Développeurs recommandés">
                         <x-slot name="action">
-                            <a href="{{ route('ai.create') }}" class="link-muted text-sm">Demander à DevLink AI</a>
+                            <a href="{{ route('ai.create') }}" class="link-muted text-sm">Demander à AfriCommit AI</a>
                         </x-slot>
                     </x-section-heading>
 

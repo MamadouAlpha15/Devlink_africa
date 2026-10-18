@@ -94,15 +94,15 @@ class DemoSeeder extends Seeder
     private function createAdmin(): void
     {
         User::factory()->admin()->create([
-            'name' => 'Admin DevLink',
+            'name' => 'Admin AfriCommit',
             'first_name' => 'Admin',
-            'last_name' => 'DevLink',
+            'last_name' => 'AfriCommit',
             'username' => 'admin',
-            'email' => 'admin@devlink.africa',
+            'email' => 'admin@africommit.com',
             'country_id' => $this->countries['GN']->id,
             'city' => 'Conakry',
             'profile_type' => ProfileType::Other,
-            'bio' => 'Compte administrateur de la plateforme DevLink Africa.',
+            'bio' => 'Compte administrateur de la plateforme AfriCommit.',
         ]);
     }
 
@@ -157,7 +157,7 @@ class DemoSeeder extends Seeder
                 'name' => "$first $last",
                 'first_name' => $first,
                 'last_name' => $last,
-                'email' => Str::slug("$first $last", '.').'@devlink.africa',
+                'email' => Str::slug("$first $last", '.').'@africommit.com',
                 'country_id' => $this->countries[$code]->id,
                 'city' => $city,
                 'profile_type' => $type,
@@ -372,7 +372,7 @@ class DemoSeeder extends Seeder
                 'Template SaaS Laravel avec abonnements en mobile money, multi-entreprises et facturation en XOF, NGN et KES.'],
             [$p['Youssef'], 'Africa Geo Data', ResourceType::Library, ['javascript', 'php'], ['géographie', 'données', 'pays'],
                 'Bibliothèque JS et PHP avec les 54 pays africains, leurs régions, villes, indicatifs et monnaies.'],
-            [$p['Mamadou'], 'Kit Figma DevLink', ResourceType::UiKit, ['figma', 'ui-ux'], ['design system', 'figma'],
+            [$p['Mamadou'], 'Kit Figma AfriCommit', ResourceType::UiKit, ['figma', 'ui-ux'], ['design system', 'figma'],
                 'Design system Figma : couleurs inspirées des tissus africains, composants, icônes et maquettes mobile.'],
             [$p['Kwame'], 'Script de sauvegarde MySQL', ResourceType::Script, ['mysql', 'linux'], ['backup', 'devops'],
                 'Script bash de sauvegarde automatique MySQL vers un stockage S3, avec rotation et alerte par email.'],

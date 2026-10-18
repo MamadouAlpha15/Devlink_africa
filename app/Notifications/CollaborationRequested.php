@@ -9,7 +9,7 @@ use App\Models\CollaborationRequest;
  * "Nouvelle demande de collaboration": to the project team for an application,
  * to the developer for an invitation.
  */
-class CollaborationRequested extends DevLinkNotification
+class CollaborationRequested extends AfriCommitNotification
 {
     public function __construct(public CollaborationRequest $request) {}
 

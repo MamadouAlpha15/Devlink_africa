@@ -20,7 +20,7 @@
         <div @class(['hidden lg:block' => $isOpen])>
             <x-page-header
                 title="Messages"
-                subtitle="Vos conversations privées avec les membres de DevLink Africa."
+                subtitle="Vos conversations privées avec les membres d'AfriCommit."
             />
         </div>
 

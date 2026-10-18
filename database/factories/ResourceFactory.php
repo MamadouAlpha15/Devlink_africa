@@ -29,7 +29,7 @@ class ResourceFactory extends Factory
             'description' => fake()->paragraph(3),
             'type' => fake()->randomElement(ResourceType::cases()),
             'status' => ResourceStatus::Approved,
-            'github_url' => 'https://github.com/devlink-africa/'.Str::slug($title),
+            'github_url' => 'https://github.com/africommit/'.Str::slug($title),
         ];
     }
 

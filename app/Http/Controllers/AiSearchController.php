@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Ai\DevLinkAi;
+use App\Ai\AfriCommitAi;
 use App\Models\AiSearch;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 /**
- * DevLink AI: "Je cherche un développeur Flutter en Guinée…" → recommended profiles with a match %.
+ * AfriCommit AI: "Je cherche un développeur Flutter en Guinée…" → recommended profiles with a match %.
  */
 class AiSearchController extends Controller
 {
@@ -29,7 +29,7 @@ class AiSearchController extends Controller
         ]);
     }
 
-    public function store(Request $request, DevLinkAi $ai): RedirectResponse
+    public function store(Request $request, AfriCommitAi $ai): RedirectResponse
     {
         $validated = $request->validate(
             ['query' => ['required', 'string', 'min:10', 'max:500']],

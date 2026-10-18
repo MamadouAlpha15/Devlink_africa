@@ -1,5 +1,5 @@
 {{--
-    DevLink AI — poser la question.
+    AfriCommit AI — poser la question.
 
     Formulaire : POST /ai, champ `query` (10 à 500 caractères), 10 recherches
     par minute maximum. L'appel à l'IA prend quelques secondes : le composant
@@ -8,7 +8,7 @@
     Variables : $examples (4 phrases), $recentSearches (5 dernières).
     Voir docs/front-end/pages.md.
 --}}
-<x-app-layout title="DevLink AI">
+<x-app-layout title="AfriCommit AI">
     <div class="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
 
         {{-- ==========  Titre  ========== --}}
@@ -19,7 +19,7 @@
 
             <p class="lead mt-3 max-w-2xl">
                 Décrivez le profil dont vous avez besoin, en une phrase et en français.
-                DevLink AI identifie la compétence, le pays et le type de projet,
+                AfriCommit AI identifie la compétence, le pays et le type de projet,
                 puis vous propose jusqu'à 10 développeurs classés par correspondance.
             </p>
         </div>
@@ -107,7 +107,7 @@
                     </div>
 
                     <p class="mt-6 text-lg font-semibold text-ink-900 dark:text-white">
-                        DevLink AI analyse votre demande
+                        AfriCommit AI analyse votre demande
                     </p>
 
                     {{-- Étape en cours --}}

@@ -1,5 +1,5 @@
 {{--
-    Logo DevLink Africa : une marque géométrique (réseau de développeurs)
+    Logo AfriCommit : une marque géométrique (réseau de développeurs)
     suivie du nom. Aucun dégradé, aplat de couleur unique.
 
     Usage : <x-logo />  ou  <x-logo :with-text="false" class="h-10 w-10" />
@@ -22,7 +22,7 @@
 
     @if ($withText)
         <span class="text-lg font-bold leading-none tracking-tight text-ink-900 dark:text-white">
-            DevLink<span class="text-brand-600 dark:text-brand-400">Africa</span>
+            Afri<span class="text-brand-600 dark:text-brand-400">Commit</span>
         </span>
     @endif
 </span>

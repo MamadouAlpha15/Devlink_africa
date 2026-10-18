@@ -35,7 +35,7 @@ Le compte Brevo de l'équipe envoie les vrais emails (300 par jour, gratuit).
    MAIL_USERNAME=…
    MAIL_PASSWORD=…
    MAIL_FROM_ADDRESS="…"
-   MAIL_FROM_NAME="DevLink Africa"
+   MAIL_FROM_NAME="AfriCommit"
    ```
 
 3. Lance `php artisan config:clear`.

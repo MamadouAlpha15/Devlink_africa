@@ -1,5 +1,5 @@
 {{--
-    L'écosystème DevLink Africa (cahier, section 5, bonus) : statistiques par pays.
+    L'écosystème AfriCommit (cahier, section 5, bonus) : statistiques par pays.
 
     Variables : $totals (developers, countries, projects, resources, collaborations),
     $countries (tous les pays actifs, avec developers_count, projects_count,
@@ -19,11 +19,11 @@
     $barWidth = fn (int $value, int $max): string => $value > 0 ? max(2, round($value / $max * 100, 1)).'%' : '0%';
 @endphp
 
-<x-app-layout title="L'écosystème DevLink Africa">
+<x-app-layout title="L'écosystème AfriCommit">
     <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
 
         <x-page-header
-            title="L'écosystème DevLink Africa"
+            title="L'écosystème AfriCommit"
             subtitle="Les développeurs, projets et ressources de la communauté, pays par pays."
         />
 

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 /**
- * Ranks developers against DevLink AI criteria and gives each a match percentage.
+ * Ranks developers against AfriCommit AI criteria and gives each a match percentage.
  *
  * Score out of 100: skills 60, country 20, experience on the same project type 10, availability 10.
  * A criterion the user did not ask for gives its full points to everyone.

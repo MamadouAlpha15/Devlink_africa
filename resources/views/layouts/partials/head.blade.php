@@ -6,7 +6,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 @auth
     {{-- Ouvre la connexion temps réel (resources/js/echo.js) pour les membres seulement. --}}
-    <meta name="devlink-user" content="{{ auth()->id() }}">
+    <meta name="africommit-user" content="{{ auth()->id() }}">
 @endauth
 
 {{--
@@ -17,9 +17,9 @@
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="theme-color" content="#4F46E5" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0B1120" media="(prefers-color-scheme: dark)">
-<meta name="description" content="DevLink Africa met en relation les développeurs, designers et porteurs de projets du continent africain.">
+<meta name="description" content="AfriCommit met en relation les développeurs, designers et porteurs de projets du continent africain.">
 
-<title>{{ $title ? $title.' · '.config('app.name', 'DevLink Africa') : config('app.name', 'DevLink Africa') }}</title>
+<title>{{ $title ? $title.' · '.config('app.name', 'AfriCommit') : config('app.name', 'AfriCommit') }}</title>
 
 <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
 

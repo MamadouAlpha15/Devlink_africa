@@ -14,7 +14,7 @@ use App\Models\Skill;
 use Illuminate\Support\Collection;
 
 /**
- * DevLink AI with Claude: turns a request written in natural language into search criteria.
+ * AfriCommit AI with Claude: turns a request written in natural language into search criteria.
  * Structured outputs restrict the answer to the skills, countries and categories of the platform.
  */
 class ClaudeCriteriaExtractor implements CriteriaExtractor
@@ -66,7 +66,7 @@ class ClaudeCriteriaExtractor implements CriteriaExtractor
     private function systemPrompt(Collection $skills, Collection $countries): string
     {
         return <<<PROMPT
-        Tu es DevLink AI, l'assistant de recrutement de la plateforme DevLink Africa.
+        Tu es AfriCommit AI, l'assistant de recrutement de la plateforme AfriCommit.
         Un membre décrit en langage naturel le profil qu'il recherche. Extrais les critères de recherche :
 
         - skills : les compétences explicitement demandées, parmi la liste autorisée (utilise le slug).

@@ -81,7 +81,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/collaborations/{collaborationRequest}/reject', [CollaborationRequestController::class, 'reject'])->name('collaborations.reject');
     Route::delete('/collaborations/{collaborationRequest}', [CollaborationRequestController::class, 'destroy'])->name('collaborations.destroy');
 
-    // DevLink AI (members only, limited to 10 searches per minute)
+    // AfriCommit AI (members only, limited to 10 searches per minute)
     Route::get('/ai', [AiSearchController::class, 'create'])->name('ai.create');
     Route::post('/ai', [AiSearchController::class, 'store'])->middleware('throttle:10,1')->name('ai.store');
     Route::get('/ai/{aiSearch}', [AiSearchController::class, 'show'])->name('ai.show');
@@ -154,7 +154,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
 // African ranking (public)
 Route::get('/ranking', [RankingController::class, 'index'])->name('ranking.index');
 
-// Bonus: "L'écosystème DevLink Africa", statistics per country (public)
+// Bonus: "L'écosystème AfriCommit", statistics per country (public)
 Route::get('/ecosysteme', EcosystemController::class)->name('ecosystem');
 
 // Public resource pages

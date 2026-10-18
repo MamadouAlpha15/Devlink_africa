@@ -2,7 +2,7 @@ import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 
 /**
- * DevLink Africa — jetons de design.
+ * AfriCommit — jetons de design.
  *
  * Principes tenus dans tout le produit :
  * - aucun dégradé : des aplats, des bordures fines, très peu d'ombre ;
@@ -71,7 +71,7 @@ export default {
             },
 
             keyframes: {
-                // Barre indéterminée du chargement DevLink AI : la seule
+                // Barre indéterminée du chargement AfriCommit AI : la seule
                 // animation en boucle du produit, et elle signale un travail
                 // réellement en cours.
                 sweep: {

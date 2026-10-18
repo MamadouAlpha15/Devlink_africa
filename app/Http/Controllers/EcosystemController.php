@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 /**
- * Bonus of the cahier (section 5): "L'écosystème DevLink Africa", statistics per country.
+ * Bonus of the cahier (section 5): "L'écosystème AfriCommit", statistics per country.
  * Only listed developers count (public, active, verified, completed profile), like the search.
  */
 class EcosystemController extends Controller

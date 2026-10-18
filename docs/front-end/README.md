@@ -1,4 +1,4 @@
-# Le front-end de DevLink Africa
+# Le front-end d'AfriCommit
 
 L'interface est écrite en Blade, Tailwind CSS 3 et Alpine 3, compilée par Vite.
 Aucune bibliothèque de composants : tout le vocabulaire visuel est maison, et

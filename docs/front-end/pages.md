@@ -182,7 +182,7 @@ actions ; `$sentApplications`, mes demandes en attente, que je peux annuler ; et
 
 ---
 
-## DevLink AI
+## AfriCommit AI
 
 Le membre écrit ce qu'il cherche en une phrase, l'IA en tire des critères et
 recommande jusqu'à dix profils avec un pourcentage de correspondance.
@@ -333,7 +333,7 @@ et `applications`, qui renvoient vers `/collaborations`.
 un `score` en pourcentage — nul hors du cas des postes ouverts — et une
 `reason` en clair. Le choix suit une règle simple : si je gère des projets avec
 des postes ouverts, ce sont les meilleurs profils pour ces postes, calculés par
-le même moteur que DevLink AI ; sinon, ce sont les développeurs actifs de mon
+le même moteur qu'AfriCommit AI ; sinon, ce sont les développeurs actifs de mon
 pays que je ne suis pas encore.
 
 `$interestingProjects` donne quatre projets, d'abord ceux qui recrutent sur mes
@@ -468,7 +468,7 @@ fois le même contenu tant que le premier signalement n'est pas traité.
 ### Les cinq pages d'administration
 
 Réservées aux comptes `is_admin`, accessibles par le menu du compte. Le compte
-de démonstration est `admin@devlink.africa`, mot de passe `password`. Le
+de démonstration est `admin@africommit.com`, mot de passe `password`. Le
 sous-menu commun vit dans `admin/partials/nav.blade.php`.
 
 **Les statistiques**, en `/admin`, reçoivent `$stats` — `users`,

@@ -6,7 +6,7 @@
  */
 const POLL_EVERY_MS = 10_000;
 const DROPDOWN_SIZE = 8;
-const MUTE_KEY = 'devlink:notifications-muted';
+const MUTE_KEY = 'africommit:notifications-muted';
 
 function storage(action, value) {
     try {
@@ -74,7 +74,7 @@ export default function notificationBell({ pollUrl, readAllUrl, csrf, initialUnr
                 this.items = [...fresh, ...this.items].slice(0, DROPDOWN_SIZE);
                 this.unread = data.unread;
                 // Shared with the messages badge (resources/js/messages.js).
-                window.dispatchEvent(new CustomEvent('devlink:unread-messages', { detail: { total: data.unread_messages ?? 0 } }));
+                window.dispatchEvent(new CustomEvent('africommit:unread-messages', { detail: { total: data.unread_messages ?? 0 } }));
                 this.since = data.server_time;
                 this.updateTitle();
             } catch {

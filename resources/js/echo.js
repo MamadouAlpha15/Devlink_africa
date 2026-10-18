@@ -10,7 +10,7 @@ import Pusher from 'pusher-js';
 | messagerie retombe sur une interrogation régulière du serveur.
 */
 
-const isMember = document.querySelector('meta[name="devlink-user"]') !== null;
+const isMember = document.querySelector('meta[name="africommit-user"]') !== null;
 
 if (isMember && import.meta.env.VITE_REVERB_APP_KEY) {
     window.Pusher = Pusher;

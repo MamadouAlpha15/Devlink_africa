@@ -11,8 +11,8 @@
  *   messagesBadge     le compteur de la barre de navigation
  *
  * Événements partagés sur `window` :
- *   devlink:unread-messages  { total }                  nouveau total de non lus
- *   devlink:thread-message   { conversationId, message } message ajouté à la conversation ouverte
+ *   africommit:unread-messages  { total }                  nouveau total de non lus
+ *   africommit:thread-message   { conversationId, message } message ajouté à la conversation ouverte
  */
 import { isRealtimeConnected, socketHeaders } from './echo';
 
@@ -69,7 +69,7 @@ export function formatListTime(iso) {
 }
 
 function shareUnreadTotal(total) {
-    window.dispatchEvent(new CustomEvent('devlink:unread-messages', { detail: { total } }));
+    window.dispatchEvent(new CustomEvent('africommit:unread-messages', { detail: { total } }));
 }
 
 /**
@@ -150,7 +150,7 @@ export function chatThread(config) {
             const wasAtBottom = this.isNearBottom();
             this.messages.push(message);
             this.messages.sort((a, b) => a.id - b.id);
-            window.dispatchEvent(new CustomEvent('devlink:thread-message', {
+            window.dispatchEvent(new CustomEvent('africommit:thread-message', {
                 detail: { conversationId: config.conversationId, message },
             }));
 
@@ -302,7 +302,7 @@ export function conversationList(config) {
                     }));
             }
 
-            window.addEventListener('devlink:thread-message', (event) => {
+            window.addEventListener('africommit:thread-message', (event) => {
                 const item = this.items.find((entry) => entry.id === event.detail.conversationId);
                 if (item) {
                     const { message } = event.detail;
@@ -335,7 +335,7 @@ export function messagesBadge(config) {
         unread: config.unread ?? 0,
 
         init() {
-            window.addEventListener('devlink:unread-messages', (event) => {
+            window.addEventListener('africommit:unread-messages', (event) => {
                 this.unread = event.detail.total;
             });
 

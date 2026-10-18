@@ -9,7 +9,7 @@ use App\Models\Skill;
 use Illuminate\Support\Str;
 
 /**
- * Local fallback for DevLink AI: recognises skills, countries and project types by keywords.
+ * Local fallback for AfriCommit AI: recognises skills, countries and project types by keywords.
  * Works offline and without an API key, so the demo never breaks.
  */
 class KeywordCriteriaExtractor implements CriteriaExtractor

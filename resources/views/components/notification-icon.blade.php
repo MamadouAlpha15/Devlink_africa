@@ -59,7 +59,7 @@
     </svg>
 
     <script>
-        window.devlinkNotificationIcons = @js($iconFor);
+        window.africommitNotificationIcons = @js($iconFor);
     </script>
 @else
     <svg {{ $attributes->merge(['class' => 'h-4 w-4']) }} aria-hidden="true">

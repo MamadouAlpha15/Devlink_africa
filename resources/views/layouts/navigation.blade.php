@@ -2,7 +2,7 @@
     Barre de navigation principale, collée en haut de la page.
 
     Répartition : la barre ne porte que les destinations publiques
-    (Développeurs · Projets · Ressources · Classement) et DevLink AI, mis en
+    (Développeurs · Projets · Ressources · Classement) et AfriCommit AI, mis en
     avant. Tout ce qui est personnel — mes collaborations, mon DevScore, mes
     favoris — vit dans le menu du compte. Sans cela la barre déborderait dès
     1024 px, et on ne distinguerait plus « explorer » de « chez moi ».
@@ -63,7 +63,7 @@
 
             {{-- Marque + liens principaux --}}
             <div class="flex min-w-0 items-center gap-2 lg:gap-5">
-                <a href="{{ auth()->check() ? route('dashboard') : url('/') }}" class="shrink-0" aria-label="Accueil DevLink Africa">
+                <a href="{{ auth()->check() ? route('dashboard') : url('/') }}" class="shrink-0" aria-label="Accueil AfriCommit">
                     <x-logo class="h-9 w-9" />
                 </a>
 
@@ -76,7 +76,7 @@
                     @endforeach
 
                     @auth
-                        {{-- DevLink AI : la fonctionnalité phare, visuellement détachée. --}}
+                        {{-- AfriCommit AI : la fonctionnalité phare, visuellement détachée. --}}
                         <a
                             href="{{ route('ai.create') }}"
                             class="nav-item ml-1.5 border {{ request()->routeIs('ai.*')
@@ -84,7 +84,7 @@
                                 : 'border-brand-200 bg-brand-50 text-brand-700 hover:bg-brand-100 hover:text-brand-800 dark:border-brand-800 dark:bg-brand-950 dark:text-brand-300 dark:hover:bg-brand-900' }}"
                         >
                             <x-icon name="sparkles" class="h-4 w-4" />
-                            DevLink AI
+                            AfriCommit AI
                         </a>
                     @endauth
                 </div>
@@ -212,7 +212,7 @@
                                         >
                                             {{-- L'emoji du backend est traduit en icône via le sprite. --}}
                                             <svg class="h-4 w-4" aria-hidden="true">
-                                                <use :href="'#notif-' + ((window.devlinkNotificationIcons || {})[item.icon] || 'bell')"></use>
+                                                <use :href="'#notif-' + ((window.africommitNotificationIcons || {})[item.icon] || 'bell')"></use>
                                             </svg>
                                         </span>
 
@@ -325,7 +325,7 @@
             @auth
                 <a href="{{ route('ai.create') }}" class="nav-item-mobile {{ request()->routeIs('ai.*') ? 'nav-item-mobile-active' : '' }}">
                     <x-icon name="sparkles" class="h-5 w-5 text-brand-500" />
-                    DevLink AI
+                    AfriCommit AI
                 </a>
             @endauth
         </div>

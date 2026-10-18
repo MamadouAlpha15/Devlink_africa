@@ -1,5 +1,5 @@
 {{--
-    DevLink AI — résultats d'une recherche.
+    AfriCommit AI — résultats d'une recherche.
 
     Variables : $search (->query), $criteria (skills, skill_categories,
     country, project_type, summary, engine), $results (score, matched_skills,
@@ -19,11 +19,11 @@
     $bestScore = collect($results)->max('score');
 @endphp
 
-<x-app-layout title="Résultats DevLink AI">
+<x-app-layout title="Résultats AfriCommit AI">
     <div class="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
 
         <x-page-header
-            title="Résultats DevLink AI"
+            title="Résultats AfriCommit AI"
             :back-link="route('ai.create')"
             back-label="Nouvelle recherche"
         >

@@ -7,7 +7,7 @@ use App\Models\Comment;
 /**
  * "Commentaire": someone commented on one of my resources.
  */
-class NewComment extends DevLinkNotification
+class NewComment extends AfriCommitNotification
 {
     public function __construct(public Comment $comment) {}
 

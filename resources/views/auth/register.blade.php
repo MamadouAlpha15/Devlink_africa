@@ -3,7 +3,7 @@
     Après l'inscription, l'utilisateur est redirigé vers /profile/developer.
 --}}
 <x-guest-layout title="Créer un compte">
-    <x-slot name="heading">Rejoignez DevLink Africa</x-slot>
+    <x-slot name="heading">Rejoignez AfriCommit</x-slot>
     <x-slot name="subheading">Créez votre compte, puis complétez votre profil développeur.</x-slot>
 
     <form method="POST" action="{{ route('register') }}" class="space-y-5">

@@ -9,7 +9,7 @@ use App\Models\User;
  * "Nouveau message". Sent once per conversation until the recipient reads it,
  * so a quick back-and-forth does not flood the bell.
  */
-class NewMessage extends DevLinkNotification
+class NewMessage extends AfriCommitNotification
 {
     public function __construct(public User $sender, public Conversation $conversation) {}
 

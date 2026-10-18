@@ -50,7 +50,7 @@ class EcosystemTest extends TestCase
 
         $response = $this->get('/ecosysteme')
             ->assertOk()
-            ->assertSee("L'écosystème DevLink Africa")
+            ->assertSee("L'écosystème AfriCommit")
             ->assertSee('Guinée')
             ->assertSee('Sénégal')
             ->assertSee('Créer un compte');

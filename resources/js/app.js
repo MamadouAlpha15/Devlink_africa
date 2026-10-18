@@ -13,7 +13,7 @@ import { chatThread, conversationList, messagesBadge } from './messages';
 | (voir resources/views/layouts/partials/theme-script.blade.php).
 */
 
-const THEME_STORAGE_KEY = 'devlink.theme';
+const THEME_STORAGE_KEY = 'africommit.theme';
 
 /** Lit le thème enregistré, ou `null` si l'utilisateur n'a jamais choisi. */
 function storedTheme() {
@@ -72,7 +72,7 @@ Alpine.data('themeToggle', () => ({
 
 /*
 |--------------------------------------------------------------------------
-| DevLink AI — formulaire de recherche
+| AfriCommit AI — formulaire de recherche
 |--------------------------------------------------------------------------
 | L'appel à l'IA prend quelques secondes : on verrouille le formulaire et on
 | affiche des étapes qui défilent pour que l'attente reste lisible.
@@ -509,7 +509,7 @@ function initCounters() {
 
 function initMotion() {
     // Le bundle est arrivé : on désarme le garde-fou posé dans <head>.
-    window.clearTimeout(window.__devlinkMotionWatchdog);
+    window.clearTimeout(window.__africommitMotionWatchdog);
 
     initScrollReveal();
     initCounters();

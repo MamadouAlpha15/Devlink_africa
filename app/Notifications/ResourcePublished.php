@@ -7,7 +7,7 @@ use App\Models\Resource;
 /**
  * "Ressource publiée": to the followers of the author.
  */
-class ResourcePublished extends DevLinkNotification
+class ResourcePublished extends AfriCommitNotification
 {
     public function __construct(public Resource $resource) {}
 

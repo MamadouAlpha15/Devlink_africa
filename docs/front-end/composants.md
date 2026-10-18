@@ -93,7 +93,7 @@ montre l'aperçu avant envoi. `confirmAction` expose `ask()`, `cancel()` et
 `isConfirming` pour la confirmation en deux temps. `dismissible` ferme un
 message, `copyToClipboard` expose `copy()` et `hasCopied`, `animatedScore` fait
 monter un score de zéro à sa valeur, et `aiSearchForm` gère l'attente de
-DevLink AI.
+AfriCommit AI.
 
 Quatre autres viennent du backend, avec `notifications.js` et `messages.js` :
 `notificationBell` pour la cloche, `messagesBadge` pour le compteur de la barre,

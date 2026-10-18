@@ -104,7 +104,7 @@ class EmailVerificationTest extends TestCase
 
         $this->actingAs($user)->get('/profile/developer')
             ->assertOk()
-            ->assertSee('Vérifiez votre e-mail pour apparaître sur DevLink Africa.');
+            ->assertSee('Vérifiez votre e-mail pour apparaître sur AfriCommit.');
 
         $this->actingAs($user)
             ->from('/profile/developer')
@@ -122,6 +122,6 @@ class EmailVerificationTest extends TestCase
     {
         $this->actingAs(User::factory()->create())->get('/profile/developer')
             ->assertOk()
-            ->assertDontSee('Vérifiez votre e-mail pour apparaître sur DevLink Africa.');
+            ->assertDontSee('Vérifiez votre e-mail pour apparaître sur AfriCommit.');
     }
 }

@@ -7,7 +7,7 @@ use App\Models\Badge;
 /**
  * Bonus: a new badge was unlocked.
  */
-class BadgeEarned extends DevLinkNotification
+class BadgeEarned extends AfriCommitNotification
 {
     public function __construct(public Badge $badge) {}
 

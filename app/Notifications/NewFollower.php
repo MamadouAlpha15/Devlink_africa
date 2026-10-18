@@ -7,7 +7,7 @@ use App\Models\User;
 /**
  * "Nouveau follower".
  */
-class NewFollower extends DevLinkNotification
+class NewFollower extends AfriCommitNotification
 {
     public function __construct(public User $follower) {}
 

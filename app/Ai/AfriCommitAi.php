@@ -7,10 +7,10 @@ use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
 /**
- * DevLink AI (cahier, section 18): understand a request written in plain French,
+ * AfriCommit AI (cahier, section 18): understand a request written in plain French,
  * then recommend developers with a match percentage.
  */
-class DevLinkAi
+class AfriCommitAi
 {
     public function __construct(
         private ?ClaudeCriteriaExtractor $claude,
@@ -48,7 +48,7 @@ class DevLinkAi
             try {
                 return [$this->claude->extract($query), 'claude'];
             } catch (CriteriaExtractionFailed $e) {
-                Log::warning('DevLink AI: Claude unavailable, using the local analyser.', ['reason' => $e->getMessage()]);
+                Log::warning('AfriCommit AI: Claude unavailable, using the local analyser.', ['reason' => $e->getMessage()]);
             }
         }
 

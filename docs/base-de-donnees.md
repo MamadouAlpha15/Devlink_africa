@@ -1,4 +1,4 @@
-# DevLink Africa — Schéma de la base de données
+# AfriCommit — Schéma de la base de données
 
 > Version 1.1 — validée par l'équipe, migrations écrites (`database/migrations/2026_10_10_*`).
 > MySQL 8 · InnoDB · utf8mb4. Toutes les tables ont `id`, `created_at`, `updated_at` sauf mention contraire.
@@ -302,7 +302,7 @@ erDiagram
 | handled_by | FK → users, nullable | admin |
 | handled_at | timestamp, nullable | |
 
-### `ai_searches` — historique DevLink AI (optionnel, utile pour la démo)
+### `ai_searches` — historique AfriCommit AI (optionnel, utile pour la démo)
 | Colonne | Type | Notes |
 |---|---|---|
 | user_id | FK → users, nullable | |
@@ -332,6 +332,6 @@ php artisan migrate:fresh --seed
 - **Référence** : 54 pays africains (avec drapeau emoji), 46 compétences, 6 badges.
 - **Démo** : ~50 membres répartis dans 16 pays, 11 projets (AfricaDelivery, FinTech Africa, HealthTech Guinea, AgriConnect, EduLink Sahel…), 12 ressources avec notes / likes / commentaires, demandes de collaboration, messages, badges et DevScore étalés sur 6 mois.
 - **Comptes** (mot de passe : `password`) :
-  - `admin@devlink.africa` — administrateur
-  - `alpha.keita@devlink.africa` — propriétaire d'AfricaDelivery
-  - `ibrahim.sow@devlink.africa`, `aminata.camara@devlink.africa`, `mamadou.diallo@devlink.africa`…
+  - `admin@africommit.com` — administrateur
+  - `alpha.keita@africommit.com` — propriétaire d'AfricaDelivery
+  - `ibrahim.sow@africommit.com`, `aminata.camara@africommit.com`, `mamadou.diallo@africommit.com`…

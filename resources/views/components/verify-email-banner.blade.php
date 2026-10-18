@@ -20,7 +20,7 @@
                     <div class="flex flex-1 items-start gap-3">
                         <x-icon name="mail" class="mt-px h-4 w-4 shrink-0" />
                         <p>
-                            <span class="font-medium">Vérifiez votre e-mail pour apparaître sur DevLink Africa.</span>
+                            <span class="font-medium">Vérifiez votre e-mail pour apparaître sur AfriCommit.</span>
                             Cliquez sur le lien envoyé à {{ auth()->user()->email }}. En attendant, votre profil reste invisible.
                         </p>
                     </div>

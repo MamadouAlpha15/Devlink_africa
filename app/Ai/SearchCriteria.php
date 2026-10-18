@@ -6,7 +6,7 @@ use App\Enums\ProjectCategory;
 use App\Enums\SkillCategory;
 
 /**
- * What DevLink AI understood from a request such as
+ * What AfriCommit AI understood from a request such as
  * "Je cherche un développeur Flutter en Guinée pour une application de livraison".
  */
 final class SearchCriteria

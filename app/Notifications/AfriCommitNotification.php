@@ -7,10 +7,10 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 /**
- * Base of every DevLink Africa notification (cahier, section 14).
+ * Base of every AfriCommit notification (cahier, section 14).
  * Respects the member's settings (section 23): "Plateforme" (database) and "Email".
  */
-abstract class DevLinkNotification extends Notification
+abstract class AfriCommitNotification extends Notification
 {
     /** Text shown in the bell and the email: "Ibrahim Sow souhaite rejoindre AfricaDelivery". */
     abstract protected function message(): string;
@@ -66,8 +66,8 @@ abstract class DevLinkNotification extends Notification
             ->subject($this->icon().' '.$this->message())
             ->greeting('Bonjour '.($notifiable->first_name ?: $notifiable->name).',')
             ->line($this->message())
-            ->action('Voir sur DevLink Africa', $this->url())
+            ->action('Voir sur AfriCommit', $this->url())
             ->line('Vous pouvez désactiver ces emails dans les paramètres de votre profil.')
-            ->salutation('L\'équipe DevLink Africa');
+            ->salutation('L\'équipe AfriCommit');
     }
 }
